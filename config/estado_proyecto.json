@@ -20,18 +20,23 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "actualizar_arquitectura_repos",
+    "tarea": "setup_y_ejecucion_m2",
     "fecha_asignada": "2026-05-07",
-    "descripcion": "Repos planif_pose y Pose_DataPipeline fueron ELIMINADOS de GitHub. El nuevo repo unificado es POSE_ETL. Seguir pasos en orden.",
-    "pasos": [
-      "1. git pull en bd_pose_b52 y gestion_comp (siguen igual)",
-      "2. Clonar POSE_ETL: git clone https://github.com/Richard-IA86/POSE_ETL.git C:\\Dev\\POSE_ETL",
-      "3. En POSE_ETL: pip install -r requirements.txt",
-      "4. Eliminar o archivar C:\\Dev\\Planif_POSE (repo borrado de GitHub)",
-      "5. Eliminar o archivar C:\\Dev\\Pose_DataPipeline (repo borrado de GitHub)",
-      "6. Documentar en ultimo_resultado y hacer push"
+    "descripcion": "Tareas exclusivas de M2 (Windows/SQL Server/Playwright). Las tareas de Planif_POSE y Pose_DataPipeline fueron migradas a POSE_ETL y las ejecuta M1 (Linux). M2 NO toca esas tareas.",
+    "aclaracion_repos_eliminados": {
+      "Planif_POSE": "ELIMINADO de GitHub. Código migrado a POSE_ETL/src/ingesta y src/pipeline. M1 se encarga. M2 NO tiene tarea aquí.",
+      "Pose_DataPipeline": "ELIMINADO de GitHub. Código migrado a POSE_ETL/src/loader y src/db. M1 ejecuta loader.py hacia Hetzner. M2 NO tiene tarea aquí."
+    },
+    "pasos_m2": [
+      "1. POSE_ETL ya clonado → cd C:\\Dev\\POSE_ETL && pip install -r requirements.txt",
+      "2. BD_POSE_B52: copiar archivos de datos de producción a 01_input_raw/",
+      "3. BD_POSE_B52: verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
+      "4. BD_POSE_B52: ejecutar validaciones pre-requisitos y Fase 2 cargas B52",
+      "5. GestionComp: ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
+      "6. GestionComp: completar reporte generador con columnas reales",
+      "7. Documentar resultado en ultimo_resultado y hacer push"
     ],
-    "notas": "No editar código. Solo clonar y limpiar. Si algo falla, documentar en ultimo_resultado."
+    "notas": "M2 solo opera SQL Server (BD_POSE_B52) y Playwright (GestionComp). Todo lo que apunte a Hetzner/PostgreSQL es M1."
   },
   "ultimo_resultado": {
     "ejecutado_por": "",
