@@ -1,0 +1,45 @@
+{
+  "proyecto": "POSE_ETL",
+  "version": "1.0.0",
+  "creado": "2026-05-07",
+  "descripcion": "ETL unificado: ingesta, normalización, pipeline, dims, loader, reportes",
+  "repos_origen": [
+    "Planif_POSE",
+    "Pose_DataPipeline",
+    "Richard_IA86_Dev/projects/report_direccion"
+  ],
+  "auditoria_qa": {
+    "repo": "auditoria_ecosauron",
+    "pipeline": "run_audit.sh",
+    "estado_pipeline": "VERDE",
+    "fecha_actualizacion": "2026-05-07"
+  },
+  "desarrollo_local": {
+    "rama_activa": "main",
+    "punto_de_partida_manana": "Fase 2 — migrar módulos en orden de flujo",
+    "fecha_actualizacion": "2026-05-07"
+  },
+  "m2_pendiente": {
+    "tarea": "",
+    "descripcion": "",
+    "fecha_asignada": "",
+    "script": "",
+    "args": []
+  },
+  "ultimo_resultado": {
+    "ejecutado_por": "",
+    "fecha": "",
+    "resultado": "",
+    "errores": "",
+    "commit": ""
+  },
+  "jornada": {
+    "fin": {
+      "fecha": "",
+      "tareas_completadas": [],
+      "tareas_pendientes_manana": [],
+      "notas_qa": "",
+      "estado_pipeline": ""
+    }
+  }
+}

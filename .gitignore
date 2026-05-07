@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.mypy_cache/
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# Scripts temporales — NUNCA versionar
+_temp_*.py
+_temp_*.sh
+debug_*
+diagnostico_*
+analisis_*
+
+# Datos — nunca versionar archivos de fuente
+fuentes/compensaciones/*.xlsx
+fuentes/compensaciones/*.xls
+fuentes/compensaciones/*.csv
+fuentes/despachos/*.xlsx
+fuentes/despachos/*.xls
+fuentes/despachos/*.csv
+fuentes/director/*.xlsx
+fuentes/director/*.xls
+
+# Outputs
+output/b52/*.csv
+output/director/*.parquet
+
+# Entorno
+.env
+config/.env
+*.log
+
+# IDE
+.vscode/settings.json
+.idea/
