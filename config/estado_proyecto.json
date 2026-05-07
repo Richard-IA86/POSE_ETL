@@ -20,11 +20,18 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "",
-    "descripcion": "",
-    "fecha_asignada": "",
-    "script": "",
-    "args": []
+    "tarea": "actualizar_arquitectura_repos",
+    "fecha_asignada": "2026-05-07",
+    "descripcion": "Repos planif_pose y Pose_DataPipeline fueron ELIMINADOS de GitHub. El nuevo repo unificado es POSE_ETL. Seguir pasos en orden.",
+    "pasos": [
+      "1. git pull en bd_pose_b52 y gestion_comp (siguen igual)",
+      "2. Clonar POSE_ETL: git clone https://github.com/Richard-IA86/POSE_ETL.git C:\\Dev\\POSE_ETL",
+      "3. En POSE_ETL: pip install -r requirements.txt",
+      "4. Eliminar o archivar C:\\Dev\\Planif_POSE (repo borrado de GitHub)",
+      "5. Eliminar o archivar C:\\Dev\\Pose_DataPipeline (repo borrado de GitHub)",
+      "6. Documentar en ultimo_resultado y hacer push"
+    ],
+    "notas": "No editar código. Solo clonar y limpiar. Si algo falla, documentar en ultimo_resultado."
   },
   "ultimo_resultado": {
     "ejecutado_por": "",
