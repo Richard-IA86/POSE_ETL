@@ -22,8 +22,8 @@ from typing import Any
 import openpyxl
 import pandas as pd
 
-INPUT_DIR = "data/input_raw"
-OUTPUT_DIR = "data/output_ready_for_pq"
+INPUT_DIR = "fuentes/compensaciones"
+OUTPUT_DIR = "output/output_ready_for_pq"
 SEP = "=" * 68
 
 SEGMENTOS_VALIDOS = [

@@ -20,28 +20,54 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "setup_y_ejecucion_m2",
+    "tarea": "setup_smog_etl_fuentes_compensaciones",
     "fecha_asignada": "2026-05-07",
-    "descripcion": "Tareas exclusivas de M2 (Windows/SQL Server/Playwright). Las tareas de Planif_POSE y Pose_DataPipeline fueron migradas a POSE_ETL y las ejecuta M1 (Linux). M2 NO toca esas tareas.",
-    "aclaracion_repos_eliminados": {
-      "Planif_POSE": "ELIMINADO de GitHub. Código migrado a POSE_ETL/src/ingesta y src/pipeline. M1 se encarga. M2 NO tiene tarea aquí.",
-      "Pose_DataPipeline": "ELIMINADO de GitHub. Código migrado a POSE_ETL/src/loader y src/db. M1 ejecuta loader.py hacia Hetzner. M2 NO tiene tarea aquí."
+    "descripcion": "Crear estructura de carpetas del flujo smog en POSE_ETL y depositar archivos fuente. El smog alimenta tanto A2 como B52 (prod y dev) mientras B52 se desarrolla. M1 ya corrigió las rutas de los scripts.",
+    "contexto_smog": {
+      "que_es": "ETL provisional (smog) que mantiene informada a la Dirección mientras se desarrolla B52 al 100%",
+      "flujo": "fuentes/compensaciones/{segmento}/ → normalizador → A2 (xlsx) + output_incremental → output/director/ (para servidor empresa) + output/b52/ (para M1)",
+      "transferencia": "Richard copia output/b52/ a M1 vía disco extraíble. Richard copia output/director/ al servidor de la empresa manualmente.",
+      "b52_prod": "espejo fiel de A2 — lo que ve el Director",
+      "b52_dev": "sandbox para probar scripts de carga incremental sin tocar prod"
     },
     "pasos_m2": [
-      "1. POSE_ETL ya clonado → cd C:\\Dev\\POSE_ETL && pip install -r requirements.txt",
-      "2. ISINDUR: actualizar REPOS en C:\\Dev\\Isindur\\crewai_orchestrator\\src\\morning_pipeline.py",
-      "   - Eliminar Planif_POSE (repo eliminado)",
-      "   - Agregar POSE_ETL en C:\\Dev\\POSE_ETL",
-      "   - Agregar Isindur en C:\\Dev\\Isindur",
-      "   - NOTA: El Ojo ya hizo el cambio en el repo remoto — solo hacer git pull en C:\\Dev\\Isindur",
-      "3. BD_POSE_B52: copiar archivos de datos de producción a 01_input_raw/",
-      "4. BD_POSE_B52: verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
-      "5. BD_POSE_B52: ejecutar validaciones pre-requisitos y Fase 2 cargas B52",
-      "6. GestionComp: ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
-      "7. GestionComp: completar reporte generador con columnas reales",
-      "8. Documentar resultado en ultimo_resultado y hacer push"
+      "PASO 0 — OBLIGATORIO SIEMPRE PRIMERO:",
+      "  cd C:\\Dev\\POSE_ETL && git pull",
+      "",
+      "PASO 1 — Crear subcarpetas del smog en fuentes\\compensaciones\\:",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2021_2022_Historico",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2023_2025_Hist",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025_Ajustes",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025_Compensaciones",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2026",
+      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\Modificaciones",
+      "",
+      "PASO 2 — Copiar archivos Excel desde ArchCostoPose\\Reservoreo\\input_raw\\ a cada subcarpeta correspondiente",
+      "  (misma estructura de carpetas que ya existe en el servidor corporativo)",
+      "",
+      "PASO 3 — Verificar que existen (ya tienen .gitkeep, no borrar):",
+      "  C:\\Dev\\POSE_ETL\\output\\b52\\",
+      "  C:\\Dev\\POSE_ETL\\output\\director\\",
+      "",
+      "PASO 4 — Documentar en ultimo_resultado: carpetas creadas + cantidad de archivos copiados por segmento",
+      "PASO 5 — git add config\\estado_proyecto.json && git commit -m 'chore(m2): setup smog fuentes 2026-05-07' && git push"
     ],
-    "notas": "M2 solo opera SQL Server (BD_POSE_B52) y Playwright (GestionComp). Todo lo que apunte a Hetzner/PostgreSQL es M1. El repo .gemini fue renombrado a Isindur — actualizar todas las referencias."
+    "tareas_pendientes_anteriores": {
+      "nota": "Las siguientes tareas siguen vigentes pero son independientes del smog ETL",
+      "bd_pose_b52": [
+        "Copiar archivos de datos de producción a 01_input_raw/",
+        "Verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
+        "Ejecutar validaciones pre-requisitos y Fase 2 cargas B52"
+      ],
+      "gestion_comp": [
+        "Ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
+        "Completar reporte generador con columnas reales"
+      ],
+      "isindur_repo": [
+        "git pull en C:\\Dev\\Isindur (El Ojo ya actualizó morning_pipeline.py en remoto)"
+      ]
+    }
   },
   "ultimo_resultado": {
     "ejecutado_por": "",

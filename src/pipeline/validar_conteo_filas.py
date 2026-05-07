@@ -7,7 +7,7 @@ import glob
 warnings.filterwarnings("ignore")
 
 # Configuration
-BASE_DIR = r"C:\Dev\Planif_POSE\data\input_raw"
+BASE_DIR = "fuentes/compensaciones"
 FOLDERS = [
     "2021_2022_Historico",
     "2023_2025_Hist",

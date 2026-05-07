@@ -59,11 +59,11 @@ def main():
     base_dir = os.path.dirname(  # noqa: F841
         os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     )  # noqa: F841
-    origen_norm = "data/output_normalized"
+    origen_norm = "output/output_normalized"
 
     # Esta será la carpeta "espejo" lista para que PQ la consuma (o para copiar a prod)  # noqa: E501
     # Usamos un nombre claro que indique que es para Ingesta
-    destino_stage = "data/output_ready_for_pq"
+    destino_stage = "output/output_ready_for_pq"
 
     print(f"Origen : {origen_norm}")
     print(f"Destino: {destino_stage}\n")

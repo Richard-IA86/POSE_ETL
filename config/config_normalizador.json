@@ -1,0 +1,80 @@
+{
+  "carpetas_consolidadas": {
+    "2021_2022_Historico": {
+      "input": "fuentes/compensaciones/2021_2022_Historico",
+      "output": "BD_Historico_2021_2022.xlsx"
+    },
+    "Modificaciones": {
+      "input": "fuentes/compensaciones/Modificaciones",
+      "output": "BD_Modificaciones.xlsx"
+    },
+    "2025_Compensaciones": {
+      "input": "fuentes/compensaciones/2025_Compensaciones",
+      "output": "BD_Compensaciones_2025.xlsx",
+      "archivos_incluidos": [
+        "Comp BRIC-POSE - Incluir en costos POSE.xlsx",
+        "Comp CAC-POSE - Incluir en costos POSE.xlsx",
+        "Comp SYGSA-POSE - Incluir en costos POSE.xlsx",
+        "Incluir en costos POSE - Prest y Alq.xlsx",
+        "2025 - COMPENSACION ANUAL RYR.xlsx",
+        "Prest_Internas_PPO.xlsx",
+        "2025 - ASFALTO.xlsx"
+      ]
+    }
+  },
+  "carpetas_individuales": {
+    "2023_2025_Hist": {
+      "input": "fuentes/compensaciones/2023_2025_Hist",
+      "output_folder": "2023_2025_Hist"
+    },
+    "2025_Ajustes": {
+      "input": "fuentes/compensaciones/2025_Ajustes",
+      "output_folder": "2025_Ajustes"
+    },
+    "2025": {
+      "input": "fuentes/compensaciones/2025",
+      "output_folder": "2025"
+    },
+    "2026": {
+      "input": "fuentes/compensaciones/2026",
+      "output_folder": "2026"
+    }
+  },
+  "rutas_salida": {
+    "consolidados": "output/output_normalized/consolidados",
+    "individuales": "output/output_normalized/individuales",
+    "reportes": "output/output_normalized/reportes"
+  },
+  "filtros_anio": {
+    "2021_2022_Historico": [
+      2021,
+      2022
+    ]
+  },
+  "schema_contract": {
+    "columnas": [
+      "FECHA",
+      "OBRA_PRONTO",
+      "DESCRIPCION_OBRA",
+      "FUENTE",
+      "TIPO_COMPROBANTE",
+      "NRO_COMPROBANTE",
+      "PROVEEDOR",
+      "DETALLE",
+      "IMPORTE",
+      "_ARCHIVO_ORIGEN",
+      "_RUTA_ORIGEN",
+      "_HOJA_ORIGEN"
+    ],
+    "drop_extra": false
+  },
+  "politica_duplicados": {
+    "2021_2022_Historico": "strict",
+    "Modificaciones": "strict",
+    "2025_Compensaciones": "soft",
+    "2023_2025_Hist": "soft",
+    "2025_Ajustes": "soft",
+    "2025": "soft",
+    "2026": "soft"
+  }
+}
