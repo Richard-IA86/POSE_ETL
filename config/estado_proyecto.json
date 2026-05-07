@@ -29,14 +29,19 @@
     },
     "pasos_m2": [
       "1. POSE_ETL ya clonado → cd C:\\Dev\\POSE_ETL && pip install -r requirements.txt",
-      "2. BD_POSE_B52: copiar archivos de datos de producción a 01_input_raw/",
-      "3. BD_POSE_B52: verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
-      "4. BD_POSE_B52: ejecutar validaciones pre-requisitos y Fase 2 cargas B52",
-      "5. GestionComp: ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
-      "6. GestionComp: completar reporte generador con columnas reales",
-      "7. Documentar resultado en ultimo_resultado y hacer push"
+      "2. ISINDUR: actualizar REPOS en C:\\Dev\\Isindur\\crewai_orchestrator\\src\\morning_pipeline.py",
+      "   - Eliminar Planif_POSE (repo eliminado)",
+      "   - Agregar POSE_ETL en C:\\Dev\\POSE_ETL",
+      "   - Agregar Isindur en C:\\Dev\\Isindur",
+      "   - NOTA: El Ojo ya hizo el cambio en el repo remoto — solo hacer git pull en C:\\Dev\\Isindur",
+      "3. BD_POSE_B52: copiar archivos de datos de producción a 01_input_raw/",
+      "4. BD_POSE_B52: verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
+      "5. BD_POSE_B52: ejecutar validaciones pre-requisitos y Fase 2 cargas B52",
+      "6. GestionComp: ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
+      "7. GestionComp: completar reporte generador con columnas reales",
+      "8. Documentar resultado en ultimo_resultado y hacer push"
     ],
-    "notas": "M2 solo opera SQL Server (BD_POSE_B52) y Playwright (GestionComp). Todo lo que apunte a Hetzner/PostgreSQL es M1."
+    "notas": "M2 solo opera SQL Server (BD_POSE_B52) y Playwright (GestionComp). Todo lo que apunte a Hetzner/PostgreSQL es M1. El repo .gemini fue renombrado a Isindur — actualizar todas las referencias."
   },
   "ultimo_resultado": {
     "ejecutado_por": "",
