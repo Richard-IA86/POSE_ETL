@@ -364,7 +364,7 @@ def _tab_explorador(df: pd.DataFrame) -> None:
         "Al terminar podés exportar la vista como imagen."
     )
     try:
-        from pygwalker.api.streamlit import (  # type: ignore[import-untyped]
+        from pygwalker.api.streamlit import (
             StreamlitRenderer,
         )
 
