@@ -6,7 +6,7 @@
   },
   "rutas": {
     "base_costo_unificada": "power_query/BaseCostoUnificada.xlsx",
-    "reservorio": "output_reservorio/BaseCostosPOSE.xlsx",
+    "reservorio": "output/director/BaseCostosPOSE.xlsx",
     "carpeta_backups": "data/temporal/backups/",
     "carpeta_logs": "logs/"
   },

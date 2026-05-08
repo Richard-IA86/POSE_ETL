@@ -551,23 +551,118 @@ def main():
     time.sleep(pausa)
 
     # ========================================================================
-    # FASE 3: Reservorio en OneDrive
+    # FASE 3: Refrescar BaseCostosPOSE.xlsx (lee Archiv_Consolidado_Final
+    # desde BaseCostoUnificada.xlsx y carga los datos para ingesta A2)
     # ========================================================================
-    archivo_reservorio = config["rutas"]["reservorio"]
-    exito_reservorio = False
+    print(f"\n{'='*70}")
+    print("[FASE 3: REPORTING RESERVORIO] Iniciando...")
+    if logger:
+        logger.info("=" * 70)
+        logger.info("[FASE 3] Refrescando BaseCostosPOSE.xlsx → output/director/")
 
-    if os.path.exists(archivo_reservorio):
-        exito_reservorio = actualizar_excel(
-            "FASE 3: REPORTING RESERVORIO", archivo_reservorio, config, logger
+    exito_reservorio = False
+    excel_fase3 = None
+    wb_reservorio = None
+
+    try:
+        ruta_unificada = os.path.abspath(
+            config["rutas"]["base_costo_unificada"]
         )
-    else:
-        # Warning controlada para no alarmar al usuario clon
-        msg = f"⚠️ Archivo reservorio no encontrado: {archivo_reservorio}\n   Se omite la Fase 3 (Reporting)."  # noqa: E501
+        ruta_reservorio = os.path.abspath(
+            config["rutas"]["reservorio"]
+        )
+
+        # Ruta vieja que puede estar hardcodeada dentro del xlsx
+        ruta_vieja = str(Path(ruta_unificada).parent.parent
+                         / "Planif_POSE" / "power_query"
+                         / "BaseCostoUnificada.xlsx")
+
+        pythoncom.CoInitialize()
+        excel_fase3 = win32.DispatchEx("Excel.Application")
+        excel_fase3.Visible = False
+        excel_fase3.DisplayAlerts = False
+
+        if logger:
+            logger.info(f"Abriendo: {Path(ruta_reservorio).name}")
+        print(f"   Abriendo {Path(ruta_reservorio).name}...")
+        wb_reservorio = excel_fase3.Workbooks.Open(ruta_reservorio)
+
+        # Corregir ruta dentro de la query PQ embebida si apunta al repo viejo
+        PREFIJOS_PQ = ("Query - ", "Consulta - ")
+        for conn in wb_reservorio.Connections:
+            nombre = conn.Name
+            for p in PREFIJOS_PQ:
+                if nombre.startswith(p):
+                    nombre = nombre[len(p):]
+                    break
+            try:
+                formula = conn.OLEDBConnection.CommandText
+                if (
+                    isinstance(formula, str)
+                    and "Planif_POSE" in formula
+                ):
+                    formula_nueva = formula.replace(
+                        ruta_vieja, ruta_unificada
+                    )
+                    conn.OLEDBConnection.CommandText = formula_nueva
+                    if logger:
+                        logger.info(
+                            f"Ruta corregida en query '{nombre}'"
+                        )
+                    print(f"   Ruta corregida en query '{nombre}'")
+            except Exception:
+                pass
+
+        # Refrescar la query con la ruta ya corregida
+        logger.info(
+            "Ejecutando refresh secuencial por capas de dependencia PQ..."
+        )
+        resultado = refresh_secuencial_pq(
+            wb_reservorio, excel_fase3,
+            config["opciones"]["timeout_minutos"] * 60,
+            logger,
+        )
+
+        # xlOpenXMLWorkbook = 51 → .xlsx sin macros
+        if logger:
+            logger.info(f"Guardando: {ruta_reservorio}")
+        print(f"   Guardando {Path(ruta_reservorio).name}...")
+        wb_reservorio.SaveAs(ruta_reservorio, FileFormat=51)
+        wb_reservorio.Close(SaveChanges=False)
+        excel_fase3.Quit()
+
+        if resultado["errores"]:
+            if logger:
+                logger.warning(
+                    f"Conexiones con error: {resultado['errores']}"
+                )
+            exito_reservorio = False
+        else:
+            if logger:
+                logger.info(
+                    "✅ Fase 3 completada — BaseCostosPOSE.xlsx actualizado"
+                )
+            print("✅ Fase 3 completada — BaseCostosPOSE.xlsx actualizado")
+            exito_reservorio = True
+
+    except Exception as e:
+        msg = f"❌ Error en Fase 3: {str(e)}"
         print(f"\n{msg}")
         if logger:
-            logger.warning(msg)
-        # Consideramos éxito parcial para no marcar el proceso como fallido en rojo  # noqa: E501
-        exito_reservorio = True
+            logger.error(msg)
+        exito_reservorio = False
+    finally:
+        try:
+            if wb_reservorio:
+                wb_reservorio.Close(SaveChanges=False)
+        except Exception:
+            pass
+        try:
+            if excel_fase3:
+                excel_fase3.Quit()
+        except Exception:
+            pass
+        pythoncom.CoUninitialize()
 
     # ========================================================================
     # RESUMEN FINAL
