@@ -9,7 +9,7 @@ set "PROJECT_ROOT=%CD%"
 popd
 
 :: Variables de entorno y rutas dinamicas
-set "PYTHON=%PROJECT_ROOT%\.venv\Scripts\python.exe"
+set "PYTHON=%PROJECT_ROOT%\..\.venv\Scripts\python.exe"
 set "CONFIG_DIR=%PROJECT_ROOT%\config"
 
 :: Verificacion del entorno virtual

@@ -6,9 +6,9 @@
   },
   "rutas": {
     "base_costo_unificada": "power_query/BaseCostoUnificada.xlsx",
-    "reservorio": "output/director/BaseCostosPOSE.xlsx",
-    "carpeta_backups": "data/temporal/backups/",
-    "carpeta_logs": "logs/"
+    "reservorio": "../output/director/BaseCostosPOSE.xlsx",
+    "carpeta_backups": "../data/temporal/backups/",
+    "carpeta_logs": "../logs/"
   },
   "opciones": {
     "timeout_minutos": 60,
