@@ -1,0 +1,27 @@
+{
+  "metadata": {
+    "version": "1.0",
+    "fecha_creacion": "2026-03-13",
+    "descripcion": "Configuracion para automatizacion de Power Query ETL Grupo POSE"
+  },
+  "rutas": {
+    "base_costo_unificada": "power_query/BaseCostoUnificada.xlsx",
+    "reservorio": "output_reservorio/BaseCostosPOSE.xlsx",
+    "carpeta_backups": "data/temporal/backups/",
+    "carpeta_logs": "logs/"
+  },
+  "opciones": {
+    "timeout_minutos": 60,
+    "crear_backup": true,
+    "dias_retencion_backup": 7,
+    "pausa_entre_archivos_segundos": 5,
+    "excel_visible": false
+  },
+  "logs": {
+    "habilitar": true,
+    "nivel": "INFO",
+    "formato": "%(asctime)s - %(levelname)s - %(message)s"
+  }
+}
+
+

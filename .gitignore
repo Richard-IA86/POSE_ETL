@@ -18,14 +18,19 @@ diagnostico_*
 analisis_*
 
 # Datos — nunca versionar archivos de fuente
-fuentes/compensaciones/*.xlsx
-fuentes/compensaciones/*.xls
-fuentes/compensaciones/*.csv
-fuentes/despachos/*.xlsx
-fuentes/despachos/*.xls
-fuentes/despachos/*.csv
-fuentes/director/*.xlsx
-fuentes/director/*.xls
+fuentes/compensaciones/**/*.xlsx
+fuentes/compensaciones/**/*.xls
+fuentes/compensaciones/**/*.csv
+fuentes/despachos/**/*.xlsx
+fuentes/despachos/**/*.xls
+fuentes/despachos/**/*.csv
+fuentes/director/**/*.xlsx
+fuentes/director/**/*.xls
+
+# Power Query — VERSIONAR SIEMPRE (oro del pipeline A2)
+!power_query/**/*.pq
+!power_query/BaseCostoUnificada.xlsx
+!power_query/Obras_Gerencias.xlsx
 
 # Outputs
 output/b52/*.csv
