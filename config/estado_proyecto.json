@@ -20,54 +20,33 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "",
-    "fecha_asignada": "2026-05-07",
-    "descripcion": "Crear estructura de carpetas del flujo smog en POSE_ETL y depositar archivos fuente. El smog alimenta tanto A2 como B52 (prod y dev) mientras B52 se desarrolla. M1 ya corrigió las rutas de los scripts.",
-    "contexto_smog": {
-      "que_es": "ETL provisional (smog) que mantiene informada a la Dirección mientras se desarrolla B52 al 100%",
-      "flujo": "fuentes/compensaciones/{segmento}/ → normalizador → A2 (xlsx) + output_incremental → output/director/ (para servidor empresa) + output/b52/ (para M1)",
-      "transferencia": "Richard copia output/b52/ a M1 vía disco extraíble. Richard copia output/director/ al servidor de la empresa manualmente.",
-      "b52_prod": "espejo fiel de A2 — lo que ve el Director",
-      "b52_dev": "sandbox para probar scripts de carga incremental sin tocar prod"
-    },
+    "tarea": "pull_nueva_arquitectura_ETL_BaseA2",
+    "fecha_asignada": "2026-05-08",
+    "descripcion": "M1 reorganizó el ETL Base A2 en ETL_BaseA2/. Hacer git pull y verificar nueva estructura. Los archivos Excel fuente siguen en fuentes/compensaciones/ (sin cambios). Mover cualquier archivo local que haya quedado en rutas viejas.",
     "pasos_m2": [
       "PASO 0 — OBLIGATORIO SIEMPRE PRIMERO:",
       "  cd C:\\Dev\\POSE_ETL && git pull",
       "",
-      "PASO 1 — Crear subcarpetas del smog en fuentes\\compensaciones\\:",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2021_2022_Historico",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2023_2025_Hist",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025_Ajustes",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2025_Compensaciones",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\2026",
-      "  mkdir C:\\Dev\\POSE_ETL\\fuentes\\compensaciones\\Modificaciones",
+      "PASO 1 — Verificar nueva estructura creada por el pull:",
+      "  dir C:\\Dev\\POSE_ETL\\ETL_BaseA2\\",
+      "  Debe existir: ETL_BaseA2\\src\\ingesta\\, ETL_BaseA2\\scripts\\,",
+      "                ETL_BaseA2\\config\\, ETL_BaseA2\\power_query\\,",
+      "                ETL_BaseA2\\input_raw\\",
       "",
-      "PASO 2 — Copiar archivos Excel desde ArchCostoPose\\Reservoreo\\input_raw\\ a cada subcarpeta correspondiente",
-      "  (misma estructura de carpetas que ya existe en el servidor corporativo)",
+      "PASO 2 — Las fuentes Excel NO se mueven (siguen en su lugar):",
+      "  fuentes\\compensaciones\\2021_2022_Historico\\ ← sin cambios",
+      "  fuentes\\compensaciones\\2023_2025_Hist\\     ← sin cambios",
+      "  fuentes\\compensaciones\\2025\\               ← sin cambios",
+      "  (etc.)",
       "",
-      "PASO 3 — Verificar que existen (ya tienen .gitkeep, no borrar):",
-      "  C:\\Dev\\POSE_ETL\\output\\b52\\",
-      "  C:\\Dev\\POSE_ETL\\output\\director\\",
+      "PASO 3 — El punto de entrada del ETL ahora es:",
+      "  C:\\Dev\\POSE_ETL\\ETL_BaseA2\\scripts\\menu_ejecucion.bat",
       "",
-      "PASO 4 — Documentar en ultimo_resultado: carpetas creadas + cantidad de archivos copiados por segmento",
-      "PASO 5 — git add config\\estado_proyecto.json && git commit -m 'chore(m2): setup smog fuentes 2026-05-07' && git push"
-    ],
-    "tareas_pendientes_anteriores": {
-      "nota": "Las siguientes tareas siguen vigentes pero son independientes del smog ETL",
-      "bd_pose_b52": [
-        "Copiar archivos de datos de producción a 01_input_raw/",
-        "Verificar driver ODBC (SQL Server) e instalar dependencias si faltan",
-        "Ejecutar validaciones pre-requisitos y Fase 2 cargas B52"
-      ],
-      "gestion_comp": [
-        "Ejecutar scraper Playwright (obras, cuenta corriente, órdenes de pago)",
-        "Completar reporte generador con columnas reales"
-      ],
-      "isindur_repo": [
-        "git pull en C:\\Dev\\Isindur (El Ojo ya actualizó morning_pipeline.py en remoto)"
-      ]
-    }
+      "PASO 4 — Documentar resultado y hacer push:",
+      "  git add config\\estado_proyecto.json",
+      "  git commit -m 'chore(m2): confirma pull arquitectura ETL_BaseA2 2026-05-08'",
+      "  git push"
+    ]
   },
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
