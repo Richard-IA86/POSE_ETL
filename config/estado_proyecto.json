@@ -20,7 +20,7 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "setup_smog_etl_fuentes_compensaciones",
+    "tarea": "",
     "fecha_asignada": "2026-05-07",
     "descripcion": "Crear estructura de carpetas del flujo smog en POSE_ETL y depositar archivos fuente. El smog alimenta tanto A2 como B52 (prod y dev) mientras B52 se desarrolla. M1 ya corrigió las rutas de los scripts.",
     "contexto_smog": {
@@ -70,11 +70,11 @@
     }
   },
   "ultimo_resultado": {
-    "ejecutado_por": "",
-    "fecha": "",
-    "resultado": "",
+    "ejecutado_por": "Isindur (M2)",
+    "fecha": "2026-05-08",
+    "resultado": "Carpetas de smog creadas y archivos copiados (2021_2022_Historico: 1, 2023_2025_Hist: 31, 2025: 5, 2025_Ajustes: 1, 2025_Compensaciones: 7, 2026: 3, Modificaciones: 1). Se mantienen .gitkeeps.",
     "errores": "",
-    "commit": ""
+    "commit": "chore(m2): setup smog fuentes 2026-05-07"
   },
   "jornada": {
     "fin": {
