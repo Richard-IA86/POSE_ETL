@@ -20,7 +20,7 @@
     "fecha_actualizacion": "2026-05-07"
   },
   "m2_pendiente": {
-    "tarea": "pull_nueva_arquitectura_ETL_BaseA2",
+    "tarea": "",
     "fecha_asignada": "2026-05-08",
     "descripcion": "M1 reorganizó el ETL Base A2 en ETL_BaseA2/. Hacer git pull y verificar nueva estructura. Los archivos Excel fuente siguen en fuentes/compensaciones/ (sin cambios). Mover cualquier archivo local que haya quedado en rutas viejas.",
     "pasos_m2": [
@@ -51,9 +51,9 @@
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
     "fecha": "2026-05-08",
-    "resultado": "Carpetas de smog creadas y archivos copiados (2021_2022_Historico: 1, 2023_2025_Hist: 31, 2025: 5, 2025_Ajustes: 1, 2025_Compensaciones: 7, 2026: 3, Modificaciones: 1). Se mantienen .gitkeeps.",
+    "resultado": "Nueva arquitectura ETL_BaseA2 recibida por pull. Carpetas y menu_ejecucion.bat verificadas. Archivos fuente Excel crudos conservados intactos en fuentes/compensaciones/.",
     "errores": "",
-    "commit": "chore(m2): setup smog fuentes 2026-05-07"
+    "commit": "chore(m2): confirma pull arquitectura ETL_BaseA2 2026-05-08"
   },
   "jornada": {
     "fin": {
