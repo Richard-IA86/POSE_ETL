@@ -15,7 +15,8 @@ let
     },
 
     // 1. Ruta del Archivo (Actualizado a Staging Normalizado) — Derivada de Param_RutaBase
-    RutaRegPronto = Param_RutaBase & "\data\output_ready_for_pq\Modificaciones\BD_Modificaciones.xlsx",
+    // Nueva arquitectura: consolidados en output\output_normalized\consolidados
+    RutaRegPronto = Param_RutaBase & "\output\output_normalized\consolidados\BD_Modificaciones.xlsx",
     NombreArchivo = "BD_Modificaciones.xlsx",
     
     // 2. Leer y Normalizar

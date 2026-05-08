@@ -6,7 +6,8 @@ let
     // =========================================================================
 
     // 1. Rutas de Carpetas (Configurable) — Derivadas de Param_RutaBase
-    RutaRaiz = Param_RutaBase & "\data\output_ready_for_pq",
+    // Nueva arquitectura: normalizador graba en output\output_normalized\individuales
+    RutaRaiz = Param_RutaBase & "\output\output_normalized\individuales",
     CarpetasObjetivo = {"2021_2022_Historico", "2023_2025_Hist", "2025_Ajustes", "2025", "2025_Compensaciones", "2026"},
     
     // 2. Conectar a Sistema de Archivos
