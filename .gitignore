@@ -34,9 +34,13 @@ fuentes/director/**/*.xls
 power_query/BaseCostoUnificada.xlsx
 !power_query/Obras_Gerencias.xlsx
 
-# Outputs
+# Outputs — archivos generados, nunca versionar
 output/b52/*.csv
 output/director/*.parquet
+output/director/*.xlsx
+output/output_normalized/
+output/output_ready_for_pq/
+data/
 
 # Entorno
 .env
