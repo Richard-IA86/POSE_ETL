@@ -29,7 +29,9 @@ fuentes/director/**/*.xls
 
 # Power Query — VERSIONAR SIEMPRE (oro del pipeline A2)
 !power_query/**/*.pq
-!power_query/BaseCostoUnificada.xlsx
+# BaseCostoUnificada.xlsx es 147 MB — supera límite GitHub (100 MB)
+# Vive en D:\Planif_POSE\power_query\ y en OneDrive. NO versionar.
+power_query/BaseCostoUnificada.xlsx
 !power_query/Obras_Gerencias.xlsx
 
 # Outputs
