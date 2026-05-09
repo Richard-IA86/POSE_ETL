@@ -38,6 +38,8 @@ ETL_BaseA2/power_query/**/BaseCostoPOSE.xlsx
 
 # Outputs — archivos generados, nunca versionar
 output/b52/*.csv
+# Excepción: hashes persistentes (necesarios para control incremental)
+!output/b52/_hashes_anterior.csv
 output/director/*.parquet
 output/director/*.xlsx
 output/output_normalized/

@@ -22,11 +22,11 @@ python -m src.crew_ecosauron.main --qa --repo pose_etl
 
 **Reglas de interpretación del resultado:**
 
-| Status | Significado | Acción |
-|--------|-------------|--------|
-| `APROBADO` | black ✅ flake8 ✅ mypy ✅ | Proceder con `git commit` |
-| `NADA` | Sin archivos .py modificados | Proceder con `git commit` |
-| `REQUIERE_ATENCION` | Errores flake8 o mypy | Leer reporte, UN pass de fix, re-ejecutar crew --qa |
+| Status              | Significado                  | Acción                                              |
+| ------------------- | ---------------------------- | --------------------------------------------------- |
+| `APROBADO`          | black ✅ flake8 ✅ mypy ✅   | Proceder con `git commit`                           |
+| `NADA`              | Sin archivos .py modificados | Proceder con `git commit`                           |
+| `REQUIERE_ATENCION` | Errores flake8 o mypy        | Leer reporte, UN pass de fix, re-ejecutar crew --qa |
 
 - **Crew maneja black automáticamente** (auto-commit si solo había formato).
 - Copilot NO corre `black` manualmente ni itera línea a línea.
@@ -51,6 +51,7 @@ python -m src.crew_ecosauron.main --qa --repo pose_etl
 > **"Ninguna ruta de dispositivo externo puede aparecer hardcodeada."**
 
 Toda ruta externa DEBE resolverse via:
+
 1. Variable de entorno (`.env` / `os.environ.get()`)
 2. Argumento CLI (`--ruta /path/al/archivo`)
 3. Fallback a carpeta local del proyecto
@@ -62,6 +63,7 @@ Toda ruta externa DEBE resolverse via:
 ## El Ojo de Sauron — Gestor (M1 / Linux / iMac)
 
 **Responsabilidades exclusivas:**
+
 - Diseñar, escribir y editar todo el código Python
 - Ejecutar CI/CD: `black` + `flake8` + `mypy` + `pytest`
 - Commit y push de código
@@ -69,6 +71,7 @@ Toda ruta externa DEBE resolverse via:
 - Orquestar qué ejecuta Isindur y cuándo
 
 **Flujo de handoff a Isindur:**
+
 ```
 1. Escribir tarea en estado_proyecto.json → m2_pendiente
 2. git commit + git push
@@ -85,17 +88,17 @@ escribes scripts. NO haces commits de código nuevo.
 
 ### Tabla de responsabilidades
 
-| Acción | Isindur (M2) | El Ojo (M1) |
-|--------|-------------|------------|
-| Escribir/editar scripts Python | ❌ | ✅ |
-| Escribir/editar scripts SQL | ❌ | ✅ |
-| `git pull` para recibir cambios | ✅ | — |
-| Ejecutar scraper Playwright (ProntoNet) | ✅ | ❌ |
-| Ejecutar scripts SQL contra SQL Server | ✅ | ❌ |
-| Mover archivos a `fuentes/director/` | ✅ | ❌ |
-| Documentar `ultimo_resultado` en estado JSON | ✅ | ❌ |
-| `git commit` + `git push` de resultados/logs | ✅ | — |
-| Diseñar arquitectura / crear módulos | ❌ | ✅ |
+| Acción                                       | Isindur (M2) | El Ojo (M1) |
+| -------------------------------------------- | ------------ | ----------- |
+| Escribir/editar scripts Python               | ❌           | ✅          |
+| Escribir/editar scripts SQL                  | ❌           | ✅          |
+| `git pull` para recibir cambios              | ✅           | —           |
+| Ejecutar scraper Playwright (ProntoNet)      | ✅           | ❌          |
+| Ejecutar scripts SQL contra SQL Server       | ✅           | ❌          |
+| Mover archivos a `fuentes/director/`         | ✅           | ❌          |
+| Documentar `ultimo_resultado` en estado JSON | ✅           | ❌          |
+| `git commit` + `git push` de resultados/logs | ✅           | —           |
+| Diseñar arquitectura / crear módulos         | ❌           | ✅          |
 
 ### Protocolo de turno — OBLIGATORIO
 
@@ -120,18 +123,21 @@ escribes scripts. NO haces commits de código nuevo.
 ### Dominio de ejecución de Isindur
 
 **POSE_ETL — pipeline M2:**
+
 ```powershell
 # Punto de entrada único (cuando esté implementado)
 python scripts/pipeline_m2.py
 ```
 
 **gestion_comp — scraper ProntoNet:**
+
 ```powershell
 python main.py --modulo obras_pronto
 python scripts/actualizar_obras_gerencias.py
 ```
 
 **bd_pose_b52 — carga SQL Server:**
+
 ```powershell
 python 02_scripts/python/cargas/03_cargar_costos_B52.py --periodo YYYY-MM
 sqlcmd -S RICHARD_ASUS\SQLEXPRESS -i 02_scripts/sql/05_reglas_negocio.sql
@@ -162,6 +168,7 @@ output/director/            ← datos_director.parquet
 ## Regla de propagación retroactiva — VIGENTE
 
 Cuando cambia OBRA_PRONTO, GERENCIA o COMPENSABLE:
+
 - El cambio aplica retroactivo a **toda la historia** por defecto
 - Excepción: hoja `Excepciones_Gerencia` en `Loockups.xlsx` define
   `fecha_inicio` para casos puntuales
@@ -234,6 +241,7 @@ Actualizar `config/estado_proyecto.json` → sección `jornada.fin`:
 ```
 
 Luego:
+
 ```bash
 git status
 git add -A
