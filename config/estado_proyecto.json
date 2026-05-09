@@ -16,29 +16,50 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "ETL_BaseA2 operativo en M2. Pendiente: diagnosticar 2023_2025_Hist y corregir normalizador si hay errores de lectura",
-    "fecha_actualizacion": "2026-05-08"
+    "punto_de_partida_manana": "Bifurcador B52 listo y commiteado (95560c5). Próximo paso: integrar lectura obligatoria en inicio de jornada + refinar diseño del bifurcador (ver notas_qa de jornada).",
+    "fecha_actualizacion": "2026-05-09"
   },
   "m2_pendiente": {
-    "tarea": "",
-    "fecha_asignada": "2026-05-08",
-    "descripcion": "Sin tarea asignada.",
-    "pasos_m2": []
+    "tarea": "ejecutar_bifurcador_dry_run",
+    "fecha_asignada": "2026-05-09",
+    "descripcion": "Correr el bifurcador en modo dry-run para verificar que BaseCostosPOSE.xlsx es leído correctamente desde M2. Si OK, correr completo para generar primer _hashes_anterior.csv.",
+    "pasos_m2": [
+      "git pull (bajar commit 95560c5 con el bifurcador)",
+      "Opción 8 del menú: Bifurcador B52 dry-run",
+      "Si OK → Opción 7: Bifurcador completo (primera corrida → todo NUEVO)",
+      "Documentar resultado en ultimo_resultado y hacer push"
+    ]
   },
   "ultimo_resultado": {
-    "ejecutado_por": "Isindur (M2)",
-    "fecha": "2026-05-08",
-    "resultado": "ETL Base A2 operativo con nueva arquitectura ETL_BaseA2/. Corrida completa exitosa: normalización + alineación PQ. Todos los segmentos procesados sin errores de ejecución. Fuentes Excel conservadas en fuentes/compensaciones/ sin cambios.",
+    "ejecutado_por": "El Ojo de Sauron (M1)",
+    "fecha": "2026-05-09",
+    "resultado": "Bifurcador B52 implementado y aprobado por crew --qa: black flake8 mypy OK + 16 tests verdes. crew_ecosauron modo --qa --repo operativo. Commits limpios sin --no-verify.",
     "errores": "",
-    "commit": "chore(m2): confirma pull arquitectura ETL_BaseA2 2026-05-08"
+    "commit": "95560c5 feat(bifurcador): B52 — hashes SHA-256 + CSV delta para staging Hetzner"
   },
   "jornada": {
     "fin": {
-      "fecha": "",
-      "tareas_completadas": [],
-      "tareas_pendientes_manana": [],
-      "notas_qa": "",
-      "estado_pipeline": ""
+      "fecha": "2026-05-09",
+      "tareas_completadas": [
+        "crew_ecosauron: qa_tools.py — modo --qa --repo con black auto-fix + flake8 + mypy estructurado (commit e6aa8b7)",
+        "crew_ecosauron: main.py — argparse --qa --repo integrado",
+        "POSE_ETL: Bifurcador B52 completo — hasher.py, lector.py, escritor_csv.py, bifurcador.py, __init__.py",
+        "POSE_ETL: 16 tests unitarios del bifurcador (test_bifurcador.py)",
+        "POSE_ETL: menu_ejecucion.bat — opción 7 (completo) y 8 (dry-run)",
+        "POSE_ETL: .gitignore — CSV corrida ignorados, _hashes_anterior.csv versionado",
+        "POSE_ETL: ETL_BaseA2/__init__.py creado (necesario para imports absolutos)",
+        "Fix commit --no-verify: revertido y reemplazado con commit limpio (95560c5)",
+        "crew --qa pose_etl final: APROBADO (black flake8 mypy sin errores)"
+      ],
+      "tareas_pendientes_manana": [
+        "M2: git pull + ejecutar bifurcador opción 8 (dry-run) para validar lectura en Windows",
+        "M2: si dry-run OK → opción 7 (primera corrida completa, genera _hashes_anterior.csv)",
+        "Refinar bifurcador: revisar si conviene tipado más estricto en archivos del resumen (str vs int)",
+        "Evaluar: ¿el delta CSV viaja automáticamente a Hetzner o M2 lo sube manualmente?",
+        "Diagnosticar segmento 2023_2025_Hist (pendiente de la jornada anterior)"
+      ],
+      "notas_qa": "Bifurcador implementado con dict[str,object] para el resumen — genera str para filas_total/filas_delta. Próxima sesión: refinar tipado o separar en TypedDict para evitar casteos en imprimir_resumen. Pre-commit hook operativo: rechazó commit con F541+mypy, se corrigió antes del commit final.",
+      "estado_pipeline": "VERDE"
     }
   }
 }
