@@ -12,46 +12,23 @@
     "repo": "auditoria_ecosauron",
     "pipeline": "run_audit.sh",
     "estado_pipeline": "VERDE",
-    "fecha_actualizacion": "2026-05-07"
+    "fecha_actualizacion": "2026-05-08"
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Fase 2 — migrar módulos en orden de flujo",
-    "fecha_actualizacion": "2026-05-07"
+    "punto_de_partida_manana": "ETL_BaseA2 operativo en M2. Pendiente: diagnosticar 2023_2025_Hist y corregir normalizador si hay errores de lectura",
+    "fecha_actualizacion": "2026-05-08"
   },
   "m2_pendiente": {
     "tarea": "",
     "fecha_asignada": "2026-05-08",
-    "descripcion": "M1 reorganizó el ETL Base A2 en ETL_BaseA2/. Hacer git pull y verificar nueva estructura. Los archivos Excel fuente siguen en fuentes/compensaciones/ (sin cambios). Mover cualquier archivo local que haya quedado en rutas viejas.",
-    "pasos_m2": [
-      "PASO 0 — OBLIGATORIO SIEMPRE PRIMERO:",
-      "  cd C:\\Dev\\POSE_ETL && git pull",
-      "",
-      "PASO 1 — Verificar nueva estructura creada por el pull:",
-      "  dir C:\\Dev\\POSE_ETL\\ETL_BaseA2\\",
-      "  Debe existir: ETL_BaseA2\\src\\ingesta\\, ETL_BaseA2\\scripts\\,",
-      "                ETL_BaseA2\\config\\, ETL_BaseA2\\power_query\\,",
-      "                ETL_BaseA2\\input_raw\\",
-      "",
-      "PASO 2 — Las fuentes Excel NO se mueven (siguen en su lugar):",
-      "  fuentes\\compensaciones\\2021_2022_Historico\\ ← sin cambios",
-      "  fuentes\\compensaciones\\2023_2025_Hist\\     ← sin cambios",
-      "  fuentes\\compensaciones\\2025\\               ← sin cambios",
-      "  (etc.)",
-      "",
-      "PASO 3 — El punto de entrada del ETL ahora es:",
-      "  C:\\Dev\\POSE_ETL\\ETL_BaseA2\\scripts\\menu_ejecucion.bat",
-      "",
-      "PASO 4 — Documentar resultado y hacer push:",
-      "  git add config\\estado_proyecto.json",
-      "  git commit -m 'chore(m2): confirma pull arquitectura ETL_BaseA2 2026-05-08'",
-      "  git push"
-    ]
+    "descripcion": "Sin tarea asignada.",
+    "pasos_m2": []
   },
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
     "fecha": "2026-05-08",
-    "resultado": "Nueva arquitectura ETL_BaseA2 recibida por pull. Carpetas y menu_ejecucion.bat verificadas. Archivos fuente Excel crudos conservados intactos en fuentes/compensaciones/.",
+    "resultado": "ETL Base A2 operativo con nueva arquitectura ETL_BaseA2/. Corrida completa exitosa: normalización + alineación PQ. Todos los segmentos procesados sin errores de ejecución. Fuentes Excel conservadas en fuentes/compensaciones/ sin cambios.",
     "errores": "",
     "commit": "chore(m2): confirma pull arquitectura ETL_BaseA2 2026-05-08"
   },
