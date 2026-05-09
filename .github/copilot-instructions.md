@@ -8,6 +8,33 @@
 
 ---
 
+# Principio Operativo: QA de Código — NO NEGOCIABLE
+
+> **"Crew corrige el formato. Copilot corrige la lógica."**
+
+## Protocolo obligatorio antes de cualquier `git commit`
+
+```bash
+cd /home/richard/Dev/crew_ecosauron
+source venv/bin/activate
+python -m src.crew_ecosauron.main --qa --repo pose_etl
+```
+
+**Reglas de interpretación del resultado:**
+
+| Status | Significado | Acción |
+|--------|-------------|--------|
+| `APROBADO` | black ✅ flake8 ✅ mypy ✅ | Proceder con `git commit` |
+| `NADA` | Sin archivos .py modificados | Proceder con `git commit` |
+| `REQUIERE_ATENCION` | Errores flake8 o mypy | Leer reporte, UN pass de fix, re-ejecutar crew --qa |
+
+- **Crew maneja black automáticamente** (auto-commit si solo había formato).
+- Copilot NO corre `black` manualmente ni itera línea a línea.
+- Si `crew --qa` genera auto-commit, hacer `git pull --ff-only` antes del
+  propio commit para incorporarlo.
+
+---
+
 # Principio Operativo: Arquitectura y Estructura — NO NEGOCIABLE
 
 > **"Prohibida la reestructuración sin evaluación QA."**
