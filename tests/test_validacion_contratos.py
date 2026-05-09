@@ -10,6 +10,7 @@ Cubre:
 
 import pandas as pd
 import pytest
+from typing import Any
 
 from ETL_BaseA2.src.validacion.contratos import (
     COLUMNAS_CRITICAS,
@@ -27,7 +28,7 @@ from ETL_BaseA2.src.validacion.contratos import (
 
 def _df_completo() -> pd.DataFrame:
     """DataFrame con todas las columnas canonicas de negocio."""
-    data = {col: ["valor"] for col in COLUMNAS_NEGOCIO}
+    data: dict[str, list[Any]] = {col: ["valor"] for col in COLUMNAS_NEGOCIO}
     data["IMPORTE"] = [1000.0]
     data["FECHA"] = ["2025-01-15"]
     return pd.DataFrame(data)
