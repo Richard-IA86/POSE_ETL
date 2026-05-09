@@ -64,6 +64,8 @@ echo. & echo [^>] Normalizando todos los segmentos...
 "%PYTHON%" -m src.ingesta.normalizador_base_costos
 echo. & echo [^>] Alineando para PQ...
 "%PYTHON%" -m src.ingesta.alinear_para_ingesta
+echo. & echo [^>] Validando ingesta (normalized vs ready_for_pq)...
+"%PYTHON%" -m src.ingesta.validacion_ingesta
 pause
 goto MENU
 
@@ -100,6 +102,8 @@ echo. & echo [^>] Normalizando segmento: %SEGMENTO%
 "%PYTHON%" -m src.ingesta.normalizador_base_costos --segmento %SEGMENTO%
 echo. & echo [^>] Alineando segmento: %SEGMENTO%
 "%PYTHON%" -m src.ingesta.alinear_para_ingesta --segmento %SEGMENTO%
+echo. & echo [^>] Validando segmento: %SEGMENTO%...
+"%PYTHON%" -m src.ingesta.validacion_ingesta --segmento %SEGMENTO%
 echo. & echo Proceso finalizado.
 pause
 goto MENU
@@ -119,6 +123,8 @@ goto MENU
 :RUN_PASO2
 echo. & echo [^>] Ejecutando Paso2 (Fase 2 + Fase 3 - Power Query)...
 "%PYTHON%" scripts\Paso2_ActualizarPQ.py
+echo. & echo [^>] Validando corrida (BaseCostosPOSE vs anterior)...
+"%PYTHON%" -m src.ingesta.validacion_corridas
 pause
 goto MENU
 
@@ -128,8 +134,12 @@ echo [FASE 1] Normalizacion...
 "%PYTHON%" -m src.ingesta.normalizador_base_costos
 echo [FASE 1] Alineacion para PQ...
 "%PYTHON%" -m src.ingesta.alinear_para_ingesta
+echo [FASE 1] Validacion ingesta...
+"%PYTHON%" -m src.ingesta.validacion_ingesta
 echo. & echo [FASE 2-3] Power Query y Reportes...
 "%PYTHON%" scripts\Paso2_ActualizarPQ.py
+echo [FASE 3] Validacion corrida...
+"%PYTHON%" -m src.ingesta.validacion_corridas
 pause
 goto MENU
 

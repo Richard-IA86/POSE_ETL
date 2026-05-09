@@ -42,6 +42,8 @@ output/director/*.parquet
 output/director/*.xlsx
 output/output_normalized/
 output/output_ready_for_pq/
+# .dat de validacion — generados por corrida, no versionar
+output/reportes/*.dat
 data/
 
 # Entorno
