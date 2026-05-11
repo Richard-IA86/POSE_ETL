@@ -25,9 +25,9 @@
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
     "fecha": "2026-05-11",
-    "resultado": "Bifurcador B52 ejecutado exitosamente: dry-run OK (455,806 filas leídas), completo generado archivos CSV output/b52/costos_b52_20260511_181723.csv y delta. Primera corrida con todos registros NUEVO.",
+    "resultado": "Bifurcador B52 ejecutado exitosamente: dry-run OK (455,806 filas leídas), completo generado archivos CSV output/b52/costos_b52_20260511_181723.csv y delta. Primera corrida con todos registros NUEVO. Credenciales corregidas (LabsRichard → Richard-IA86). Historial limpiado: BaseCostoUnificada.xlsx excluida de .gitignore y removida del historial local.",
     "errores": "",
-    "commit": "Sin commit aún"
+    "commit": "a5ff776 chore(m2): resultado bifurcador B52 - primera corrida completa"
   },
   "jornada": {
     "fin": {
@@ -44,8 +44,8 @@
         "crew --qa pose_etl final: APROBADO (black flake8 mypy sin errores)"
       ],
       "tareas_pendientes_manana": [
-        "M2: git pull + ejecutar bifurcador opción 8 (dry-run) para validar lectura en Windows",
-        "M2: si dry-run OK → opción 7 (primera corrida completa, genera _hashes_anterior.csv)",
+        "Refinar bifurcador: revisar tipado estricto en archivos del resumen (str vs int)",
+        "Evaluar: ¿el delta CSV viaja automáticamente a Hetzner o M2 lo sube manualmente?",
         "Refinar bifurcador: revisar si conviene tipado más estricto en archivos del resumen (str vs int)",
         "Evaluar: ¿el delta CSV viaja automáticamente a Hetzner o M2 lo sube manualmente?",
         "Diagnosticar segmento 2023_2025_Hist (pendiente de la jornada anterior)"
