@@ -44,11 +44,9 @@
         "crew --qa pose_etl final: APROBADO (black flake8 mypy sin errores)"
       ],
       "tareas_pendientes_manana": [
-        "Refinar bifurcador: revisar tipado estricto en archivos del resumen (str vs int)",
+        "Refinar bifurcador: revisar tipado estricto en archivos del resumen (str vs int / TypedDict)",
         "Evaluar: ¿el delta CSV viaja automáticamente a Hetzner o M2 lo sube manualmente?",
-        "Refinar bifurcador: revisar si conviene tipado más estricto en archivos del resumen (str vs int)",
-        "Evaluar: ¿el delta CSV viaja automáticamente a Hetzner o M2 lo sube manualmente?",
-        "Diagnosticar segmento 2023_2025_Hist (pendiente de la jornada anterior)"
+        "Diagnosticar segmento 2023_2025_Hist (pendiente de jornada anterior)"
       ],
       "notas_qa": "Bifurcador implementado con dict[str,object] para el resumen — genera str para filas_total/filas_delta. Próxima sesión: refinar tipado o separar en TypedDict para evitar casteos en imprimir_resumen. Pre-commit hook operativo: rechazó commit con F541+mypy, se corrigió antes del commit final.",
       "estado_pipeline": "VERDE"
