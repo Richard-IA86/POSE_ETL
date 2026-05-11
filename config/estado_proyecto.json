@@ -20,22 +20,14 @@
     "fecha_actualizacion": "2026-05-09"
   },
   "m2_pendiente": {
-    "tarea": "ejecutar_bifurcador_dry_run",
-    "fecha_asignada": "2026-05-09",
-    "descripcion": "Correr el bifurcador en modo dry-run para verificar que BaseCostosPOSE.xlsx es leído correctamente desde M2. Si OK, correr completo para generar primer _hashes_anterior.csv.",
-    "pasos_m2": [
-      "git pull (bajar commit 95560c5 con el bifurcador)",
-      "Opción 8 del menú: Bifurcador B52 dry-run",
-      "Si OK → Opción 7: Bifurcador completo (primera corrida → todo NUEVO)",
-      "Documentar resultado en ultimo_resultado y hacer push"
-    ]
+    "tarea": ""
   },
   "ultimo_resultado": {
-    "ejecutado_por": "El Ojo de Sauron (M1)",
-    "fecha": "2026-05-09",
-    "resultado": "Bifurcador B52 implementado y aprobado por crew --qa: black flake8 mypy OK + 16 tests verdes. crew_ecosauron modo --qa --repo operativo. Commits limpios sin --no-verify.",
+    "ejecutado_por": "Isindur (M2)",
+    "fecha": "2026-05-11",
+    "resultado": "Bifurcador B52 ejecutado exitosamente: dry-run OK (455,806 filas leídas), completo generado archivos CSV output/b52/costos_b52_20260511_181723.csv y delta. Primera corrida con todos registros NUEVO.",
     "errores": "",
-    "commit": "95560c5 feat(bifurcador): B52 — hashes SHA-256 + CSV delta para staging Hetzner"
+    "commit": "Sin commit aún"
   },
   "jornada": {
     "fin": {
