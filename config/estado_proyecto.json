@@ -22,6 +22,22 @@
   "m2_pendiente": {
     "tarea": ""
   },
+  "decisiones": {
+    "hetzner_delta_csv": {
+      "decision": "M2 sube el delta CSV manualmente a Hetzner staging",
+      "razon": "No existe logica de upload automatico en el bifurcador. El archivo output/b52/*_delta.csv se genera localmente y M2 lo transfiere segun necesidad.",
+      "fecha": "2026-05-12",
+      "pendiente": "Evaluar en el futuro si conviene automatizar via scp/sftp desde bifurcador.py"
+    }
+  },
+  "diagnosticos": {
+    "segmento_2023_2025_Hist": {
+      "estado": "FALSO_POSITIVO_DOCUMENTADO",
+      "descripcion": "comparativo_registros.py (modulo de validacion de la migracion) no existe en POSE_ETL — pertenecia a repos obsoletos (Planif_POSE / Pose_DataPipeline). El exit code 1 documentado en ETL_A2-migracionB52.md es un falso positivo: CODIGO_CUENTA nunca existio en los 31 archivos fuente del segmento, por lo que crudo_cuentas==0 e ingesta_cuentas==0 son ambos esperados. Filas e importes cuadran correctamente.",
+      "accion_pendiente": "Si se crea comparativo_registros.py en POSE_ETL, la condicion BLOQUEANTE debe ser: crudo_cuentas > 0 AND ingesta_cuentas == 0 (no solo ingesta_cuentas == 0).",
+      "fecha": "2026-05-12"
+    }
+  },
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
     "fecha": "2026-05-11",

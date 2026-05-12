@@ -17,10 +17,19 @@ from __future__ import annotations
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import TypedDict
 
 import pandas as pd
 
 DIR_B52_DEFAULT = "output/b52"
+
+
+class ArchivosB52(TypedDict):
+    completo: str
+    delta: str
+    filas_total: int
+    filas_delta: int
+
 
 # Columnas de salida en orden canónico B52
 # Las de auditoría van al final, _estado_carga es la primera de control
@@ -61,7 +70,7 @@ def escribir_csv(
     df: pd.DataFrame,
     directorio: str = DIR_B52_DEFAULT,
     ts: str | None = None,
-) -> dict[str, str]:
+) -> ArchivosB52:
     """
     Escribe CSV completo + CSV delta en output/b52/.
     Retorna dict con rutas generadas:
@@ -102,6 +111,6 @@ def escribir_csv(
     return {
         "completo": ruta_completo,
         "delta": ruta_delta,
-        "filas_total": str(len(df_out)),
-        "filas_delta": str(len(df_delta)),
+        "filas_total": len(df_out),
+        "filas_delta": len(df_delta),
     }

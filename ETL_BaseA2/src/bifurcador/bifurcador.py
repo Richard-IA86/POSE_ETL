@@ -26,7 +26,7 @@ import argparse
 import sys
 from datetime import datetime
 
-from ETL_BaseA2.src.bifurcador.escritor_csv import escribir_csv
+from ETL_BaseA2.src.bifurcador.escritor_csv import ArchivosB52, escribir_csv
 from ETL_BaseA2.src.bifurcador.hasher import (
     calcular_hashes,
     cargar_hashes_anterior,
@@ -72,7 +72,7 @@ def fmt_imp(v: float) -> str:
 def imprimir_resumen(
     resumen_lect: dict[str, object],
     estados: dict[str, int],
-    archivos: dict[str, object],
+    archivos: ArchivosB52 | None,
     dry_run: bool,
     inicio: datetime,
 ) -> None:
@@ -98,14 +98,12 @@ def imprimir_resumen(
     print(f"    MODIFICADO    : {estados.get('MODIFICADO', 0):,}")
     print(f"    SIN_CAMBIO    : {estados.get('SIN_CAMBIO', 0):,}")
 
-    if not dry_run:
+    if not dry_run and archivos is not None:
         print()
         print("  ARCHIVOS GENERADOS:")
-        print(f"    Completo      : {archivos.get('completo', '')}")
-        print(f"    Delta         : {archivos.get('delta', '')}")
-        fd_raw = str(archivos.get("filas_delta", "0") or "0")
-        fd = int(fd_raw) if fd_raw.isdigit() else 0
-        print(f"    Filas delta   : {fd:,}")
+        print(f"    Completo      : {archivos['completo']}")
+        print(f"    Delta         : {archivos['delta']}")
+        print(f"    Filas delta   : {archivos['filas_delta']:,}")
     else:
         print()
         print("  [DRY-RUN] Sin escritura de archivos.")
@@ -139,9 +137,9 @@ def run(
     estados = resumen_estados(df)
 
     # 4. Escribir archivos
-    archivos: dict[str, object] = {}
+    archivos: ArchivosB52 | None = None
     if not dry_run:
-        archivos = escribir_csv(df)  # type: ignore[assignment]
+        archivos = escribir_csv(df)
         guardar_hashes(df, HASH_FILE)
 
     imprimir_resumen(resumen_lect, estados, archivos, dry_run, inicio)
@@ -155,7 +153,7 @@ def run(
     return {
         "lectura": resumen_lect,
         "estados": estados,
-        "archivos": archivos,
+        "archivos": archivos,  # ArchivosB52 | None
         "primera_corrida": primera_corrida,
     }
 
