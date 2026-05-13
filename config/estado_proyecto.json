@@ -20,7 +20,13 @@
     "fecha_actualizacion": "2026-05-13"
   },
   "m2_pendiente": {
-    "tarea": ""
+    "tarea": "ISINDUR: hacete cargo de las dos tareas M2 y respondé con docs/isindur_tareas_delegadas.md",
+    "fecha": "2026-05-13",
+    "detalle": [
+      "1. morning_pipeline.py — El script que corres cada mañana tiene dos rutas rotas: (a) la carpeta 'Data Analytics' tiene un espacio y tira WinError 267 → usá Path() o raw string. (b) la ruta 'Isindur' apunta a C:\\Dev\\Isindur que no existe → cambiala a C:\\Dev\\.gemini. Ese script es tuyo, arreglalo y dejá la versión corregida en scripts/morning_pipeline.py para versionarlo.",
+      "2. Bifurcador B52 — El módulo ETL_BaseA2/src/bifurcador/ ya está construido y corrió una vez (hay _hashes_anterior.csv en output/b52/). Necesitamos que corras: python -m ETL_BaseA2.src.bifurcador.bifurcador desde la raíz del repo. Verificá que genere output/b52/*_completo.csv y output/b52/*_delta.csv. Reportá cuántas filas NUEVO / MODIFICADO / SIN_CAMBIO."
+    ],
+    "respuesta_esperada": "Creá docs/isindur_tareas_delegadas.md con: estado de cada tarea, lo que pudiste ejecutar, errores si hubo, y qué necesitás de M1 para continuar. Commit + push."
   },
   "decisiones": {
     "hetzner_delta_csv": {
