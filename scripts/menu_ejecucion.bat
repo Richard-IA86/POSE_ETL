@@ -41,6 +41,9 @@ echo  FASE 2 y 3: POWER QUERY + REPORTES
 echo  5. Actualizar Modelos Excel (Paso2)
 echo  6. ETL COMPLETO (Fase 1 + Fase 2 + Fase 3)
 echo -------------------------------------------------
+echo  B52 - CARGA INCREMENTAL
+echo  7. Bifurcador B52 (genera delta para Hetzner)
+echo -------------------------------------------------
 echo  CONFIGURACION
 echo  9. Editar config_normalizador.json
 echo 10. Editar config_automatizacion.json
@@ -54,6 +57,7 @@ if "%opcion%"=="3"  goto RUN_NORM
 if "%opcion%"=="4"  goto RUN_ALINEAR
 if "%opcion%"=="5"  goto RUN_PASO2
 if "%opcion%"=="6"  goto RUN_ETL_COMPLETO
+if "%opcion%"=="7"  goto RUN_BIFURCADOR
 if "%opcion%"=="9"  goto EDIT_CONFIG
 if "%opcion%"=="10" goto EDIT_CONFIG_AUTO
 if "%opcion%"=="0"  exit
@@ -130,6 +134,12 @@ echo [FASE 1] Alineacion para PQ...
 "%PYTHON%" -m src.ingesta.alinear_para_ingesta
 echo. & echo [FASE 2-3] Power Query y Reportes...
 "%PYTHON%" scripts\Paso2_ActualizarPQ.py
+pause
+goto MENU
+
+:RUN_BIFURCADOR
+echo. & echo [^>] Bifurcador B52 — BaseCostosPOSE.xlsx → output/b52/...
+"%PYTHON%" -m ETL_BaseA2.src.bifurcador.bifurcador
 pause
 goto MENU
 
