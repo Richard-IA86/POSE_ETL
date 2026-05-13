@@ -10,7 +10,7 @@ let
     // 1. CARGAR ARCHIVO Y TABLA
     // -------------------------------------------------------------------------
     Origen = Excel.Workbook(
-        File.Contents(Param_RutaBase & "\data\sistema\Loockups.xlsx"), 
+        File.Contents(Param_RutaBase & "\sistema\Loockups.xlsx"), 
         null, 
         true
     ),
