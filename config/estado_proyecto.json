@@ -16,7 +16,7 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "ETL A2 completo (14054ce). Pipeline operativo: 44 arch / 538,258 filas / BaseCostosPOSE.xlsx 36.3 MB. Pendiente M1: (1) fix morning_pipeline.py rutas 'Data Analytics' y 'Isindur'. (2) evaluar COMPENSABLE nulo en obra 00000438.",
+    "punto_de_partida_manana": "Esperando respuesta de Isindur (docs/isindur_tareas_delegadas.md). Tareas M1 completadas hoy: bifurcador en menu opcion 7, COMPENSABLE 00000438 corregido en Loockups.xlsx (91cf845), roles Isindur sin prohibiciones rigidas (e749d78). Pendiente: morning_pipeline.py + recarga masiva dwgrupopose_b53_prod.",
     "fecha_actualizacion": "2026-05-13"
   },
   "m2_pendiente": {
