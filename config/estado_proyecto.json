@@ -36,6 +36,15 @@
       "pendiente": "Evaluar en el futuro si conviene automatizar via scp/sftp desde bifurcador.py"
     }
   },
+  "alertas_pendientes": {
+    "recarga_b53_prod": {
+      "estado": "PENDIENTE",
+      "descripcion": "dwgrupopose_b53_prod: lo cargado actualmente no sirve. El cambio en la columna COMPENSABLE genera un delta casi masivo. Requiere recarga completa de la tabla antes de activar carga incremental.",
+      "impacto": "ALTO — afecta casi todos los registros historicos",
+      "accion": "Vaciar tabla en Hetzner y recargar desde el CSV completo que genera el bifurcador (costos_b52_*_completo.csv). Coordinar con M1 antes de ejecutar.",
+      "fecha": "2026-05-13"
+    }
+  },
   "diagnosticos": {
     "segmento_2023_2025_Hist": {
       "estado": "FALSO_POSITIVO_DOCUMENTADO",
