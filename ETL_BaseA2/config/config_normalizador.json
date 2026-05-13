@@ -41,9 +41,9 @@
     }
   },
   "rutas_salida": {
-    "consolidados": "output/output_normalized/consolidados",
-    "individuales": "output/output_normalized/individuales",
-    "reportes": "output/output_normalized/reportes"
+    "consolidados": "../output/output_normalized/consolidados",
+    "individuales": "../output/output_normalized/individuales",
+    "reportes": "../output/output_normalized/reportes"
   },
   "filtros_anio": {
     "2021_2022_Historico": [
