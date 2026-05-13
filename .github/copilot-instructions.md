@@ -8,32 +8,6 @@
 
 ---
 
-# Principio Operativo: QA de Código — NO NEGOCIABLE
-
-> **"Crew corrige el formato. Copilot corrige la lógica."**
-
-## Protocolo obligatorio antes de cualquier `git commit`
-
-```bash
-cd /home/richard/Dev/crew_ecosauron
-source venv/bin/activate
-python -m src.crew_ecosauron.main --qa --repo pose_etl
-```
-
-**Reglas de interpretación del resultado:**
-
-| Status              | Significado                  | Acción                                              |
-| ------------------- | ---------------------------- | --------------------------------------------------- |
-| `APROBADO`          | black ✅ flake8 ✅ mypy ✅   | Proceder con `git commit`                           |
-| `NADA`              | Sin archivos .py modificados | Proceder con `git commit`                           |
-| `REQUIERE_ATENCION` | Errores flake8 o mypy        | Leer reporte, UN pass de fix, re-ejecutar crew --qa |
-
-- **Crew maneja black automáticamente** (auto-commit si solo había formato).
-- Copilot NO corre `black` manualmente ni itera línea a línea.
-- Si `crew --qa` genera auto-commit, hacer `git pull --ff-only` antes del
-  propio commit para incorporarlo.
-
----
 
 # Principio Operativo: Arquitectura y Estructura — NO NEGOCIABLE
 
@@ -205,46 +179,4 @@ mensaje = (
 
 ---
 
-# Protocolo de Sincronización — OBLIGATORIO ANTES DE EDITAR
 
-```bash
-bash /home/richard/Dev/auditoria_ecosauron/scripts/prefetch_check.sh \
-    /home/richard/Dev/POSE_ETL
-```
-
-- Salida `✔` = seguro editar.
-- Salida `✘ DIVERGENCIA` = hacer `git pull` primero, sin excepción.
-
----
-
-# Protocolo de Jornada
-
-## Trigger: "inicio de jornada"
-
-1. Leer `/home/richard/Dev/auditoria_ecosauron/logs/novedades_diarias.md`
-2. Si Semáforo ROJO → detenerse y alertar al usuario
-3. Reportar `m2_pendiente` si hay tarea sin ejecutar
-4. Reportar `tareas_pendientes_manana` del cierre anterior
-
-## Trigger: "fin de jornada"
-
-Actualizar `config/estado_proyecto.json` → sección `jornada.fin`:
-
-```json
-{
-  "fecha": "YYYY-MM-DD",
-  "tareas_completadas": ["..."],
-  "tareas_pendientes_manana": ["..."],
-  "notas_qa": "...",
-  "estado_pipeline": "VERDE | AMARILLO | ROJO"
-}
-```
-
-Luego:
-
-```bash
-git status
-git add -A
-git commit -m "chore(jornada): cierre YYYY-MM-DD"
-# Pedir aprobación al usuario antes de git push
-```
