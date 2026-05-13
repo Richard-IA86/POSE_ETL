@@ -27,6 +27,11 @@ fuentes/despachos/**/*.csv
 fuentes/director/**/*.xlsx
 fuentes/director/**/*.xls
 
+# ETL_BaseA2 — archivos fuente y archivos de referencia local
+ETL_BaseA2/input_raw/**/*.xlsx
+ETL_BaseA2/input_raw/**/*.xls
+ETL_BaseA2/arch_hist_py/
+
 # Power Query — VERSIONAR SIEMPRE (oro del pipeline A2)
 !power_query/**/*.pq
 # BaseCostoUnificada.xlsx es 147 MB — supera límite GitHub (100 MB)
