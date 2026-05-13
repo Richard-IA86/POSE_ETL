@@ -5,7 +5,7 @@
     "descripcion": "Configuracion para automatizacion de Power Query ETL Grupo POSE"
   },
   "rutas": {
-    "base_costo_unificada": "power_query/BaseCostoUnificada.xlsx",
+    "base_costo_unificada": "../power_query/BaseCostoUnificada.xlsx",
     "reservorio": "../output/director/BaseCostosPOSE.xlsx",
     "carpeta_backups": "../data/temporal/backups/",
     "carpeta_logs": "../logs/"

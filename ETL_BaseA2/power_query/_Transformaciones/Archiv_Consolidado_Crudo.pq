@@ -6,8 +6,10 @@ let
     // =========================================================================
 
     // 1. Rutas de Carpetas (Configurable) — Derivadas de Param_RutaBase
-    // Nueva arquitectura: normalizador graba en output\output_normalized\individuales
-    RutaRaiz = Param_RutaBase & "\output\output_normalized\individuales",
+    // output_ready_for_pq: estructura plana — cada segmento es una carpeta de primer nivel
+    // Consolidados (BD_xxx.xlsx único archivo): 2021_2022_Historico/, 2025_Compensaciones/
+    // Individuales (múltiples xlsx por periodo): 2023_2025_Hist/, 2025_Ajustes/, 2025/, 2026/
+    RutaRaiz = Param_RutaBase & "\output\output_ready_for_pq",
     CarpetasObjetivo = {"2021_2022_Historico", "2023_2025_Hist", "2025_Ajustes", "2025", "2025_Compensaciones", "2026"},
     
     // 2. Conectar a Sistema de Archivos
