@@ -43,7 +43,7 @@
     "fecha": "2026-05-13",
     "resultado": "ETL A2 completo: Fase 1 (normalizador 44 archivos / 538,258 filas + alinear_para_ingesta 44 archivos → output_ready_for_pq). Fase 2 BaseCostoUnificada.xlsx refresh 6 capas PQ OK (17:49). Fase 3 BaseCostosPOSE.xlsx → output/director/ OK (5:32). Total 23:21. Nuevo mes incorporado: 2026-04 COSTOS GERENCIAS (17,236 filas). Corrección aplicada: Archiv_Consolidado_Crudo.pq CarpetasObjetivo alineada con estructura real output_ready_for_pq. config_automatizacion.json ruta base_costo_unificada corregida a ../power_query/BaseCostoUnificada.xlsx.",
     "errores": "",
-    "commit": "pendiente"
+    "commit": "6c6bafe chore(m2): resultado ETL A2 completo 2026-05-13"
   },
   "jornada": {
     "fin": {
