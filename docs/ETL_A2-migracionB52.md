@@ -1,47 +1,41 @@
 # ETL A2 — Migración a BD_POSE_B52
 
-**Fecha de ejecución:** 2026-05-08
+**Última ejecución:** 2026-05-13
 **Ejecutado en:** M2 (Isindur — Asus/Windows)
-**Estado:** ✅ COMPLETO — `BaseCostosPOSE.xlsx` generado (33 MB)
+**Estado:** ✅ COMPLETO — `BaseCostosPOSE.xlsx` generado (36.3 MB)
+
+> Historial de corridas al final del documento (sección 6).
 
 ---
 
 ## 1. Métricas del output final
 
-`output/director/BaseCostosPOSE.xlsx` — generado 2026-05-08 01:40:37
+`output/director/BaseCostosPOSE.xlsx` — generado 2026-05-13 17:10
 
 | Métrica | Valor |
 |---------|-------|
-| **Total filas** | 345,777 |
-| **Importe total (ARS)** | -86,725,584,699.03 |
-| **Filas OBRA_PRONTO no nulas** | 345,777 (100%) |
-| **Obras únicas (OBRA_PRONTO)** | 421 |
-| **Filas CODIGO_CUENTA no vacías** | 84,057 |
+| **Archivos procesados** | 44 |
+| **Total filas normalizadas** | 538,258 |
+| **BaseCostoUnificada.xlsx** | ~100.8 MB |
+| **BaseCostosPOSE.xlsx** | 36.3 MB |
 
 > **Nota CODIGO_CUENTA:** Los 31 archivos del segmento `2023_2025_Hist`
 > (2023-01 a 2025-07) no tenían la columna en origen → el normalizador
-> la agrega vacía por schema fill. Las 84,057 filas con cuenta corresponden
-> a `2025` (ago-dic), `2025_Ajustes`, `2026` y parcialmente `2025_Compensaciones`.
+> la agrega vacía por schema fill. Los segmentos `2025` (ago-dic),
+> `2025_Ajustes`, `2026` y `2025_Compensaciones` sí la tienen.
 
-### Detalle COMPENSABLE
+### Detalle de filas por segmento (run 2026-05-13)
 
-| Valor | Filas |
-|-------|------:|
-| SI | 248,904 |
-| COMPENSABLE TALLER | 41,479 |
-| COMPENSABLE GASTOS DE SEDE | 16,084 |
-| DESARROLLOS | 11,607 |
-| COMPENSABLE CAC | 10,426 |
-| COMPENSABLE SYGSA | 5,551 |
-| ACTIVOS | 5,158 |
-| COMPENSABLE BRIC | 4,191 |
-| COMPENSABLE EFVO | 714 |
-| COMPENSABLE WITT | 579 |
-| ADMINISTRACION | 547 |
-| COMPENSABLE WORK PROJECTS | 481 |
-| CAC | 36 |
-| COMPENSABLE QUINCENA | 20 |
-| **TOTAL** | **345,777** |
+| Segmento | Archivos | Filas |
+|----------|:--------:|------:|
+| `2023_2025_Hist` | 31 | 287,821 |
+| `2025` (ago-dic) | 5 | 88,179 |
+| `2026` | 4 | 70,268 |
+| `BD_Modificaciones` | 1 | 71,910 |
+| `BD_Compensaciones_2025` | 1 | 11,008 |
+| `BD_Historico_2021_2022` | 1 | 7,876 |
+| `2025_Ajustes` | 1 | 1,196 |
+| **TOTAL** | **44** | **538,258** |
 
 ---
 
@@ -126,13 +120,14 @@ Todos los archivos en `output/output_ready_for_pq/` son consumidos por
 > `Prest_Internas_PPO`, `2025 - ASFALTO`.
 > Total procesado: 11,008 filas | Σ $605,614,687.05
 
-### Segmento: `2026` — 3 archivos (4.65 MB)
+### Segmento: `2026` — 4 archivos (actualizado 2026-05-13)
 
-| Carpeta | Archivo | MB |
-|---------|---------|---:|
-| `output_ready_for_pq/2026/` | `2026-01 COSTOS GERENCIAS.xlsx` | 1.58 |
-| | `2026-02 COSTOS GERENCIAS.xlsx` | 1.51 |
-| | `2026-03 COSTOS GERENCIAS.xlsx` | 1.56 |
+| Carpeta | Archivo |
+|---------|--------|
+| `output_ready_for_pq/2026/` | `2026-01 COSTOS GERENCIAS.xlsx` |
+| | `2026-02 COSTOS GERENCIAS.xlsx` |
+| | `2026-03 COSTOS GERENCIAS.xlsx` |
+| | `2026-04 COSTOS GERENCIAS.xlsx` ← **nuevo** |
 
 ### Segmento: `Modificaciones` — 1 archivo (6.78 MB)
 
@@ -147,49 +142,89 @@ Todos los archivos en `output/output_ready_for_pq/` son consumidos por
 ## 3. Flujo completo del pipeline
 
 ```
-fuentes/compensaciones/{segmento}/*.xlsx
-        │  (xlsx crudos por período)
+ETL_BaseA2/input_raw/{segmento}/*.xlsx
+        │  (xlsx fuente copiados manualmente a input_raw/)
+        │  Nombres de carpeta en input_raw/ (≠ output_ready_for_pq/):
+        │    BD_Historico_2021_2022/  →  output: 2021_2022_Historico/
+        │    2023_2025_Hist/          →  output: 2023_2025_Hist/
+        │    2025/                    →  output: 2025/
+        │    2025_Ajustes/            →  output: 2025_Ajustes/
+        │    BD_Compensaciones_2025/  →  output: 2025_Compensaciones/
+        │    2026/                    →  output: 2026/
+        │    BD_Modificaciones/       →  output: Modificaciones/
         ▼
-[1] src/ingesta/normalizador_base_costos.py --segmento X
+[1] ETL_BaseA2/src/ingesta/normalizador_base_costos.py
+        │  Ejecutar: python -m src.ingesta.normalizador_base_costos
         │  • Estandariza columnas al schema unificado (16 cols)
         │  • Aplica filtros de años según segmento
         │  • Elimina duplicados STRICT
-        │  • Agrega columnas vacías por schema fill (ej: CODIGO_CUENTA en 2023)
+        │  • Schema fill: agrega col vacía si no existe en origen
+        │  • Genera REPORTE_INGESTA.md con métricas por archivo
         ▼
-output/output_normalized/individuales/{segmento}/*.xlsx   (o consolidados/)
+ETL_BaseA2/output/output_normalized/individuales/{segmento}/*.xlsx
         │
         ▼
-[2] src/ingesta/alinear_para_ingesta.py --segmento X
+[2] ETL_BaseA2/src/ingesta/alinear_para_ingesta.py
+        │  Ejecutar: python -m src.ingesta.alinear_para_ingesta
         │  • Valida schema de 16 columnas exactas
         │  • Reordena columnas al orden canónico
-        │  • Copia a output_ready_for_pq/{segmento}/
+        │  • Copia a output_ready_for_pq/ con nombre de segmento final
         ▼
-output/output_ready_for_pq/{segmento}/*.xlsx   ← 43 archivos, ~43 MB total
-        │
+ETL_BaseA2/output/output_ready_for_pq/{segmento}/*.xlsx
+        │  44 archivos, 538,258 filas (run 2026-05-13)
+        │  Carpeta EXCLUIDA de git (.gitignore)
         ▼
-[3] scripts/Paso2_ActualizarPQ.py  (via COM Excel / pywin32)
-     ├─ FASE 2: Refresh BaseCostoUnificada.xlsx (6 capas PQ, 09:32)
-     │    Capa 1: Con_Maestros
-     │    Capa 2: Dim_Obras, Dim_Calendario_TC, Dim_TipComprobante,
-     │            Dim_Fuentes, Dim_Excepciones
-     │    Capa 3: Archiv_Consolidado_Crudo, Archiv_Altas_Manuales,
-     │            Analisis_Filas_Descartadas
-     │    Capa 4: Archiv_Consolidado_Modif
-     │    Capa 5: Archiv_Consolidado_Final  (453s — capa más pesada)
-     │    Capa 6: Debug_Normalizacion_Fuente, Debug_Parsing_Detalle
-     │    → Guarda BaseCostoUnificada.xlsx (~147 MB)
+[3] ETL_BaseA2/scripts/Paso2_ActualizarPQ.py  (via COM Excel / pywin32)
+     │  Ejecutar: python scripts/Paso2_ActualizarPQ.py
+     │  Config: ETL_BaseA2/config/config_automatizacion.json
      │
-     └─ FASE 3: Refresh BaseCostosPOSE.xlsx (6 capas PQ, ~3 min)
-          → Guarda output/director/BaseCostosPOSE.xlsx (33 MB) ✅
+     ├─ FASE 2: Refresh power_query/BaseCostoUnificada.xlsx
+     │    Lee: ETL_BaseA2/output/output_ready_for_pq/ (Param_RutaBase)
+     │    Consultas PQ (en orden de dependencia):
+     │      Con_Maestros
+     │      Dim_Obras, Dim_Calendario_TC, Dim_TipComprobante,
+     │        Dim_Fuentes, Dim_Excepciones
+     │      Archiv_Consolidado_Crudo ← lee output_ready_for_pq/ por carpeta
+     │      Archiv_Altas_Manuales, Analisis_Filas_Descartadas
+     │      Archiv_Consolidado_Modif
+     │      Archiv_Consolidado_Final
+     │      Debug_Normalizacion_Fuente, Debug_Parsing_Detalle
+     │    → Guarda power_query/BaseCostoUnificada.xlsx (~100.8 MB)
+     │    EXCLUIDO de git por tamaño
+     │
+     └─ FASE 3: Refresh output/director/BaseCostosPOSE.xlsx
+          Lee: BaseCostoUnificada.xlsx
+          → Guarda output/director/BaseCostosPOSE.xlsx (36.3 MB) ✅
+          EXCLUIDO de git por tamaño
 ```
 
-### Tiempos de ejecución (2026-05-08 — historia completa)
+### Tiempos de ejecución por corrida
 
-| Fase | Tiempo |
-|------|--------|
-| Fase 2 — BaseCostoUnificada.xlsx | 09:32 |
-| Fase 3 — BaseCostosPOSE.xlsx | ~03:00 |
-| **Total Paso2** | **12:56** |
+| Corrida | Fase 2 | Fase 3 | Total | Archivos | Filas |
+|---------|-------:|-------:|------:|:--------:|------:|
+| 2026-05-08 | 09:32 | ~03:00 | ~12:56 | 43 | 345,777 |
+| 2026-05-13 | 17:49 | 05:32 | 23:21 | 44 | 538,258 |
+
+> El incremento de tiempo 2026-05-13 refleja el crecimiento de datos
+> (2026-04 nuevo + datos más voluminosos en todos los segmentos).
+
+### Regla de negocio en Archiv_Consolidado_Crudo.pq
+
+El segmento `2021_2022_Historico` contiene filas con `FUENTE = "COMP SYGSA-POSE"`
+que ya están incluidas en `2025_Compensaciones`. Para evitar duplicados:
+
+```powerquery
+FilasValidas = Table.SelectRows(
+    FilasBase,
+    each not (
+        Text.Contains([Folder Path], "2021_2022_Historico")
+        and [FUENTE] = "COMP SYGSA-POSE"
+    )
+)
+```
+
+El segmento `Modificaciones/` es **excluido** de `CarpetasObjetivo` en la
+consulta cruda — se procesa en `Archiv_Consolidado_Modif` por separado.
 
 ---
 
@@ -218,11 +253,40 @@ Ejecutado: `python -m src.ingesta.comparativo_registros` (todos los segmentos)
 
 ---
 
-## 5. Commits de esta jornada (POSE_ETL)
+## 5. Fixes aplicados durante el desarrollo
 
-| Hash | Tipo | Descripción |
-|------|------|-------------|
-| `390e077` | fix(paso2) | Restaurar Fase3 — corrección ruta `BaseCostosPOSE.xlsx` |
-| `95e2d6d` | chore(jornada) | `.gitignore` excluye `output/` y `data/`; `menu_ejecucion.bat` migrado desde Planif_POSE; reporte ingesta actualizado |
+### 2026-05-13
 
-**Estado:** 2 commits adelante de `origin/main`. Push pendiente de aprobación.
+| Archivo | Fix |
+|---------|-----|
+| `ETL_BaseA2/power_query/_Transformaciones/Archiv_Consolidado_Crudo.pq` | `CarpetasObjetivo` tenía rutas incorrectas (`consolidados/` e `individuales/`). Corregido a nombres reales de segmento en `output_ready_for_pq/`. |
+| `ETL_BaseA2/config/config_automatizacion.json` | Ruta `base_costo_unificada` era `"power_query/BaseCostoUnificada.xlsx"` (relativa a ETL_BaseA2/). Corregida a `"../power_query/BaseCostoUnificada.xlsx"` (el archivo está un nivel arriba). |
+
+### 2026-05-08
+
+| Archivo | Fix |
+|---------|-----|
+| `scripts/Paso2_ActualizarPQ.py` | Restaurar Fase 3 — corrección ruta `BaseCostosPOSE.xlsx` |
+
+---
+
+## 6. Historial de corridas
+
+### Run 2026-05-13
+
+- **Archivos procesados:** 44 (nuevo: `2026-04 COSTOS GERENCIAS.xlsx`)
+- **Filas totales:** 538,258
+- **BaseCostoUnificada.xlsx:** ~100.8 MB
+- **BaseCostosPOSE.xlsx:** 36.3 MB
+- **Commits POSE_ETL:**
+  - `6c6bafe` — chore(m2): resultado ETL A2 completo 2026-05-13
+  - `7a72f25` — chore(git): excluir input_raw y arch_hist_py; actualizar Loockups y REPORTE_INGESTA
+
+### Run 2026-05-08
+
+- **Archivos procesados:** 43
+- **Filas totales:** 345,777
+- **BaseCostosPOSE.xlsx:** 33 MB
+- **Commits POSE_ETL:**
+  - `390e077` — fix(paso2): restaurar Fase3
+  - `95e2d6d` — chore(jornada): .gitignore + menu_ejecucion.bat
