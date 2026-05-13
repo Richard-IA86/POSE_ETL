@@ -28,27 +28,18 @@ fuentes/director/**/*.xlsx
 fuentes/director/**/*.xls
 
 # Power Query — VERSIONAR SIEMPRE (oro del pipeline A2)
-!ETL_BaseA2/power_query/**/*.pq
-!ETL_BaseA2/power_query/Obras_Gerencias.xlsx
-# Esqueleto de trabajo permitido para PQ (liviano)
-!power_query/Esqueleto_ETL.xlsx
-# Excels contenedores de PQ — supera límite GitHub (100 MB)
-# Viven en D:\Planif_POSE\ y en OneDrive. NO versionar.
-ETL_BaseA2/power_query/BaseCostoUnificada.xlsx
-ETL_BaseA2/power_query/Arch_BD_CostoUnificada/*.xlsx
-ETL_BaseA2/power_query/**/BaseCostoPOSE.xlsx
+!power_query/**/*.pq
+# BaseCostoUnificada.xlsx es 147 MB — supera límite GitHub (100 MB)
+# Vive en D:\Planif_POSE\power_query\ y en OneDrive. NO versionar.
 power_query/BaseCostoUnificada.xlsx
+!power_query/Obras_Gerencias.xlsx
 
 # Outputs — archivos generados, nunca versionar
 output/b52/*.csv
-# Excepción: hashes persistentes (necesarios para control incremental)
-!output/b52/_hashes_anterior.csv
 output/director/*.parquet
 output/director/*.xlsx
 output/output_normalized/
 output/output_ready_for_pq/
-# .dat de validacion — generados por corrida, no versionar
-output/reportes/*.dat
 data/
 
 # Entorno
