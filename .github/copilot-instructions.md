@@ -89,6 +89,20 @@ coordina con M1 los cambios que afecten el pipeline completo.
 8. git push
 ```
 
+### Protocolo de fix de código — ACORDADO
+
+> **Sauron crea → Isindur hace funcionar → Sauron verifica.**
+
+Cuando se detecta un bug en cualquier archivo del ecosistema:
+
+1. **Isindur identifica** el bug y lo documenta en `ultimo_resultado`.
+2. **Isindur aplica el fix** directamente si es un cambio puntual y bien
+   delimitado (una línea, una ruta, un valor). Commit + push.
+3. **Sauron verifica** en M1 al hacer `git pull`: revisa el diff, corre
+   QA (`black` + `flake8` + `mypy` + `pytest`) y aprueba o corrige.
+4. Si el fix requiere rediseño o afecta el pipeline completo → Isindur
+   solo documenta, Sauron diseña la solución.
+
 ### Señales de alerta (avisar a Richard)
 
 - `m2_pendiente` vacío → consultar antes de actuar
