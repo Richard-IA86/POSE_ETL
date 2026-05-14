@@ -49,6 +49,7 @@ COLS_SALIDA: list[str] = [
     "OBSERVACION",
     "RUBRO_CONTABLE",
     "CUENTA_CONTABLE",
+    "COMPENSABLE",
     "_estado_carga",
     "_hash_fila",
     "_hash_importe",

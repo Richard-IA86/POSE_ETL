@@ -46,9 +46,18 @@ def _sha256_fila(row: pd.Series) -> str:
     return hashlib.sha256(partes.encode("utf-8")).hexdigest()
 
 
-def _sha256_importe(hash_fila: str, importe: float) -> str:
-    """SHA-256 de la identidad + importe (detecta modificación)."""
-    contenido = f"{hash_fila}|{importe:.6f}"
+def _sha256_importe(
+    hash_fila: str,
+    importe: float,
+    compensable: str,
+    codigo_cuenta: str,
+) -> str:
+    """SHA-256 de identidad + importe + compensable + cuenta."""
+    contenido = (
+        f"{hash_fila}|{importe:.6f}"
+        f"|{compensable.strip().upper()}"
+        f"|{codigo_cuenta.strip().upper()}"
+    )
     return hashlib.sha256(contenido.encode("utf-8")).hexdigest()
 
 
@@ -71,9 +80,25 @@ def calcular_hashes(df: pd.DataFrame) -> pd.DataFrame:
     ).fillna(0.0)
 
     df["_hash_fila"] = df.apply(_sha256_fila, axis=1)
+
+    compensable_vals = (
+        df.get("COMPENSABLE", pd.Series("", index=df.index))
+        .fillna("")
+        .astype(str)
+    )
+    codigo_cuenta_vals = (
+        df["CODIGO_CUENTA"].fillna("").astype(str)
+        if "CODIGO_CUENTA" in df.columns
+        else pd.Series("", index=df.index)
+    )
     df["_hash_importe"] = [
-        _sha256_importe(hf, imp)
-        for hf, imp in zip(df["_hash_fila"], importe_num)
+        _sha256_importe(hf, imp, comp, cc)
+        for hf, imp, comp, cc in zip(
+            df["_hash_fila"],
+            importe_num,
+            compensable_vals,
+            codigo_cuenta_vals,
+        )
     ]
 
     return df
