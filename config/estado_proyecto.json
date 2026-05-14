@@ -20,13 +20,9 @@
     "fecha_actualizacion": "2026-05-13"
   },
   "m2_pendiente": {
-    "tarea": "ISINDUR: hacete cargo de las dos tareas M2 y respondé con docs/isindur_tareas_delegadas.md",
-    "fecha": "2026-05-13",
-    "detalle": [
-      "1. morning_pipeline.py — El script que corres cada mañana tiene dos rutas rotas: (a) la carpeta 'Data Analytics' tiene un espacio y tira WinError 267 → usá Path() o raw string. (b) la ruta 'Isindur' apunta a C:\\Dev\\Isindur que no existe → cambiala a C:\\Dev\\.gemini. Ese script es tuyo, arreglalo y dejá la versión corregida en scripts/morning_pipeline.py para versionarlo.",
-      "2. Bifurcador B52 — El módulo ETL_BaseA2/src/bifurcador/ ya está construido y corrió una vez (hay _hashes_anterior.csv en output/b52/). Necesitamos que corras: python -m ETL_BaseA2.src.bifurcador.bifurcador desde la raíz del repo. Verificá que genere output/b52/*_completo.csv y output/b52/*_delta.csv. Reportá cuántas filas NUEVO / MODIFICADO / SIN_CAMBIO."
-    ],
-    "respuesta_esperada": "Creá docs/isindur_tareas_delegadas.md con: estado de cada tarea, lo que pudiste ejecutar, errores si hubo, y qué necesitás de M1 para continuar. Commit + push."
+    "tarea": "",
+    "fecha": "2026-05-14",
+    "detalle": []
   },
   "decisiones": {
     "hetzner_delta_csv": {
@@ -55,37 +51,30 @@
   },
   "ultimo_resultado": {
     "ejecutado_por": "Isindur (M2)",
-    "fecha": "2026-05-13",
-    "resultado": "ETL A2 completo: Fase 1 (normalizador 44 archivos / 538,258 filas + alinear_para_ingesta → output_ready_for_pq). Fase 2 BaseCostoUnificada.xlsx refresh OK (17:49). Fase 3 BaseCostosPOSE.xlsx 36.3 MB OK (5:32). Total 23:21. Nuevo mes: 2026-04 (17,236 filas). Fixes: Archiv_Consolidado_Crudo.pq CarpetasObjetivo + config_automatizacion.json ruta ../power_query/. Crew fix: morning_crew.py UnicodeEncodeError emoji cp1252 corregido (sys.stdout.reconfigure). Doc ETL_A2-migracionB52.md actualizada con run completo.",
+    "fecha": "2026-05-14",
+    "resultado": "Bifurcador B52 ejecutado con BaseCostosPOSE.xlsx actualizado (PQ corrió correctamente). 473,098 filas leídas. NUEVO 17,674 / MODIFICADO 284,362 / SIN_CAMBIO 171,062. Delta: 302,036 filas. Archivos generados: output/b52/costos_b52_20260514_023142.csv (completo) y costos_b52_20260514_023142_delta.csv. Fix aplicado: rutas absolutas en bifurcador.py y lector.py usando Path(__file__).resolve().parents[3]. Pendiente transferencia a M1 para carga en dw_grupopose_b52 (PostgreSQL/Hetzner). Nota: migrar ejecución bifurcador a Python integrado con GestionComp (próxima iteración).",
     "errores": "",
     "pendientes_m1": [
-      "morning_pipeline.py: ruta 'Data Analytics' con espacio → WinError 267. Fix: usar Path() o raw string. Ruta 'Isindur' apunta a C:\\Dev\\Isindur inexistente → cambiar a C:\\Dev\\.gemini",
-      "Loockups.xlsx obra 00000438 (BARRIO EL MOLINO - SAN VICENTE): COMPENSABLE es NULL — evaluar si es dato faltante real",
-      "comparativo_registros.py: si se crea en POSE_ETL, condición BLOQUEANTE debe ser crudo_cuentas > 0 AND ingesta_cuentas == 0 (no solo ingesta_cuentas == 0)"
+      "Recibir output/b52/costos_b52_20260514_023142_delta.csv (302,036 filas) y ejecutar loader en Hetzner → fact_costos_b52",
+      "Evaluar migración de ejecución del bifurcador a flujo Python integrado con GestionComp"
     ],
-    "commit": "14054ce docs(etl-a2): actualizar doc run 2026-05-13"
+    "commit": "pendiente"
   },
   "jornada": {
     "fin": {
-      "fecha": "2026-05-13",
+      "fecha": "2026-05-14",
       "tareas_completadas": [
-        "ETL A2 Fase 1: normalizador_base_costos.py — 44 archivos, 538,258 filas normalizadas",
-        "ETL A2 Fase 1: alinear_para_ingesta.py — 44 archivos copiados a output_ready_for_pq/",
-        "ETL A2 Fase 2: Paso2_ActualizarPQ.py — BaseCostoUnificada.xlsx refresh OK (17:49)",
-        "ETL A2 Fase 3: Paso2_ActualizarPQ.py — BaseCostosPOSE.xlsx 36.3 MB OK (5:32)",
-        "Fix pq: Archiv_Consolidado_Crudo.pq CarpetasObjetivo corregida a nombres reales de segmento",
-        "Fix config: config_automatizacion.json ruta base_costo_unificada → ../power_query/",
-        "Fix crew: morning_crew.py UnicodeEncodeError emoji ❌ en cp1252 — sys.stdout.reconfigure(utf-8)",
-        "Git: .gitignore POSE_ETL — agregar ETL_BaseA2/input_raw/ y ETL_BaseA2/arch_hist_py/",
-        "Git: _temp_analisis_columnas.py eliminado de GestionComp",
-        "Docs: ETL_A2-migracionB52.md actualizada con run 2026-05-13 completo (commit 14054ce)"
+        "Bifurcador B52: rutas absolutas corregidas en bifurcador.py y lector.py (Path(__file__).resolve().parents[3])",
+        "Bifurcador B52: ejecutado con BaseCostosPOSE.xlsx actualizado — 473,098 filas, delta 302,036 (NUEVO 17,674 / MODIFICADO 284,362 / SIN_CAMBIO 171,062)",
+        "GestionComp: scraper debitos_creditos_bancarios implementado y probado en vivo (commit 401e53a)",
+        "morning_pipeline.py: rutas corregidas con Path() + C:\\Dev\\.gemini (commit 4e1e8eb en .gemini)"
       ],
       "tareas_pendientes_manana": [
-        "[M1] morning_pipeline.py: corregir ruta 'Data Analytics' (WinError 267 por espacio en path) y 'Isindur' (apunta a C:\\Dev\\Isindur inexistente — debe ser C:\\Dev\\.gemini)",
-        "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar si es dato faltante",
-        "[M1] GestionComp: prueba empírica del formulario de solicitud de reporte (usuario no técnico) — ver TASKS.md"
+        "[M1] Recibir costos_b52_20260514_023142_delta.csv (302,036 filas) y cargar en Hetzner → fact_costos_b52",
+        "[M1/M2] Migrar ejecución del bifurcador B52 a flujo Python integrado con GestionComp (reemplazar .bat)",
+        "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar dato faltante"
       ],
-      "notas_qa": "Pipeline ETL A2 operativo y documentado. Crew corregido. Todos los repos limpios en git. Los 3 pendientes de mañana son todos tarea M1.",
+      "notas_qa": "Bifurcador operativo con datos frescos. Fix de rutas absolutas aplicado. GestionComp+scraper debitos/creditos funcionando. Todo listo para carga en Hetzner desde M1.",
       "estado_pipeline": "VERDE"
     }
   }

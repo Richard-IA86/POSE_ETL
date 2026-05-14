@@ -14,7 +14,10 @@ from pathlib import Path
 
 import pandas as pd
 
-FUENTE_DEFAULT = "output/director/BaseCostosPOSE.xlsx"
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+FUENTE_DEFAULT = str(
+    _PROJECT_ROOT / "output" / "director" / "BaseCostosPOSE.xlsx"
+)
 
 # Columnas de negocio que deben existir en el Excel
 COLS_NEGOCIO: list[str] = [

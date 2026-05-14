@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import sys
 from datetime import datetime
+from pathlib import Path
 
 from ETL_BaseA2.src.bifurcador.escritor_csv import ArchivosB52, escribir_csv
 from ETL_BaseA2.src.bifurcador.hasher import (
@@ -40,8 +41,11 @@ from ETL_BaseA2.src.bifurcador.lector import (
 )
 
 SEP = "=" * 72
-FUENTE_DEFAULT = "output/director/BaseCostosPOSE.xlsx"
-HASH_FILE = "output/b52/_hashes_anterior.csv"
+_PROJECT_ROOT = Path(__file__).resolve().parents[3]
+FUENTE_DEFAULT = str(
+    _PROJECT_ROOT / "output" / "director" / "BaseCostosPOSE.xlsx"
+)
+HASH_FILE = str(_PROJECT_ROOT / "output" / "b52" / "_hashes_anterior.csv")
 
 
 def parsear_argumentos() -> argparse.Namespace:
