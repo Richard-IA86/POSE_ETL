@@ -558,7 +558,9 @@ def main():
     print("[FASE 3: REPORTING RESERVORIO] Iniciando...")
     if logger:
         logger.info("=" * 70)
-        logger.info("[FASE 3] Refrescando BaseCostosPOSE.xlsx → output/director/")
+        logger.info(
+            "[FASE 3] Refrescando BaseCostosPOSE.xlsx" " → output/director/"
+        )
 
     exito_reservorio = False
     excel_fase3 = None
@@ -568,14 +570,15 @@ def main():
         ruta_unificada = os.path.abspath(
             config["rutas"]["base_costo_unificada"]
         )
-        ruta_reservorio = os.path.abspath(
-            config["rutas"]["reservorio"]
-        )
+        ruta_reservorio = os.path.abspath(config["rutas"]["reservorio"])
 
         # Ruta vieja que puede estar hardcodeada dentro del xlsx
-        ruta_vieja = str(Path(ruta_unificada).parent.parent
-                         / "Planif_POSE" / "power_query"
-                         / "BaseCostoUnificada.xlsx")
+        ruta_vieja = str(
+            Path(ruta_unificada).parent.parent
+            / "Planif_POSE"
+            / "power_query"
+            / "BaseCostoUnificada.xlsx"
+        )
 
         pythoncom.CoInitialize()
         excel_fase3 = win32.DispatchEx("Excel.Application")
@@ -593,57 +596,79 @@ def main():
             nombre = conn.Name
             for p in PREFIJOS_PQ:
                 if nombre.startswith(p):
-                    nombre = nombre[len(p):]
+                    nombre = nombre[len(p) :]
                     break
             try:
                 formula = conn.OLEDBConnection.CommandText
-                if (
-                    isinstance(formula, str)
-                    and "Planif_POSE" in formula
-                ):
-                    formula_nueva = formula.replace(
-                        ruta_vieja, ruta_unificada
-                    )
+                if isinstance(formula, str) and "Planif_POSE" in formula:
+                    formula_nueva = formula.replace(ruta_vieja, ruta_unificada)
                     conn.OLEDBConnection.CommandText = formula_nueva
                     if logger:
-                        logger.info(
-                            f"Ruta corregida en query '{nombre}'"
-                        )
+                        logger.info(f"Ruta corregida en query '{nombre}'")
                     print(f"   Ruta corregida en query '{nombre}'")
             except Exception:
                 pass
 
-        # Refrescar la query con la ruta ya corregida
+        # Fase 3: refrescar TODAS las conexiones del reservorio.
+        # BaseCostosPOSE.xlsx tiene sus propias queries (distintas a
+        # CAPAS_REFRESH_PQ, que es exclusiva de BaseCostoUnificada.xlsx).
+        # Usar refresh_secuencial_pq aquí provocaba que todas las
+        # conexiones quedasen en "no_encontradas" → nada se refrescaba
+        # pero el script reportaba éxito (errores == []).
+        PREFIJOS_PQ_F3 = ("Query - ", "Consulta - ")
+        refrescadas_f3: list[str] = []
+        errores_f3: list[str] = []
+        for conn in wb_reservorio.Connections:
+            nombre = conn.Name
+            for p in PREFIJOS_PQ_F3:
+                if nombre.startswith(p):
+                    nombre = nombre[len(p) :]
+                    break
+            try:
+                conn.Refresh()
+                refrescadas_f3.append(nombre)
+                logger.info(f"  Refrescando: '{nombre}'")
+            except Exception as e:
+                logger.error(f"  ❌ Error refrescando '{nombre}': {e}")
+                errores_f3.append(nombre)
+
+        excel_fase3.CalculateUntilAsyncQueriesDone()
         logger.info(
-            "Ejecutando refresh secuencial por capas de dependencia PQ..."
-        )
-        resultado = refresh_secuencial_pq(
-            wb_reservorio, excel_fase3,
-            config["opciones"]["timeout_minutos"] * 60,
-            logger,
+            f"Conexiones refrescadas: {refrescadas_f3} | "
+            f"Errores: {errores_f3}"
         )
 
+        if not refrescadas_f3:
+            msg = (
+                "❌ Fase 3 FALLÓ: ninguna conexión fue refrescada en "
+                f"{Path(ruta_reservorio).name}. "
+                "Verificar nombres de queries en el workbook."
+            )
+            logger.error(msg)
+            print(f"\n{msg}")
+            exito_reservorio = False
+        elif errores_f3:
+            logger.warning(f"Conexiones con error: {errores_f3}")
+            exito_reservorio = False
+        else:
+            exito_reservorio = True
+
         # xlOpenXMLWorkbook = 51 → .xlsx sin macros
-        if logger:
-            logger.info(f"Guardando: {ruta_reservorio}")
-        print(f"   Guardando {Path(ruta_reservorio).name}...")
-        wb_reservorio.SaveAs(ruta_reservorio, FileFormat=51)
+        if exito_reservorio:
+            if logger:
+                logger.info(f"Guardando: {ruta_reservorio}")
+            print(f"   Guardando {Path(ruta_reservorio).name}...")
+            wb_reservorio.SaveAs(ruta_reservorio, FileFormat=51)
+
         wb_reservorio.Close(SaveChanges=False)
         excel_fase3.Quit()
 
-        if resultado["errores"]:
-            if logger:
-                logger.warning(
-                    f"Conexiones con error: {resultado['errores']}"
-                )
-            exito_reservorio = False
-        else:
+        if exito_reservorio:
             if logger:
                 logger.info(
                     "✅ Fase 3 completada — BaseCostosPOSE.xlsx actualizado"
                 )
             print("✅ Fase 3 completada — BaseCostosPOSE.xlsx actualizado")
-            exito_reservorio = True
 
     except Exception as e:
         msg = f"❌ Error en Fase 3: {str(e)}"
