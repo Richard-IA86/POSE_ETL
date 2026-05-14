@@ -30,15 +30,16 @@
     "fecha_actualizacion": "2026-05-14"
   },
   "m2_pendiente": {
-    "tarea": "ISINDUR: 3 tareas — fix bifurcador post-corrección M1 (commit 6d75ea4)",
+    "tarea": "ISINDUR: correr Paso2 + bifurcador con schema expandido (GERENCIA, TC, IMPORTE_USD)",
     "fecha": "2026-05-14",
     "detalle": [
-      "1. GIT PULL — siempre primero. Trae commit 6d75ea4 (fix bifurcador: COMPENSABLE en hash).",
-      "2. RESETEAR HASHES — Borrar output/b52/_hashes_anterior.csv. Los hashes cambiaron con el fix; si no se borra, toda la primera corrida saldrá como MODIFICADO falso. Comando: del output\\b52\\_hashes_anterior.csv",
-      "3. CORRER BIFURCADOR — python ETL_BaseA2/scripts/bifurcador.py (o el punto de entrada habitual). Primera corrida post-fix: todos los registros saldrán como NUEVO (base limpia). Reportar totales en ultimo_resultado.",
-      "4. PRUEBA DE REGRESIÓN COMPENSABLE — Después de la primera corrida exitosa: (a) Abrir el archivo fuente '2021_2022_Historico' (el .xlsx de la fuente, no el consolidado). (b) Buscar cualquier fila de enero (MES=1). (c) Cambiar el valor de la columna COMPENSABLE en esa fila (ej: de 'SI' a 'NO' o viceversa, o de vacío a cualquier valor). (d) Guardar. (e) Volver a correr el bifurcador. (f) VERIFICAR en el CSV delta que esa fila aparece como MODIFICADO (no SIN_CAMBIO). Si aparece MODIFICADO: fix confirmado. Si aparece SIN_CAMBIO: reportar a M1 con detalle de la fila modificada."
+      "1. GIT PULL — siempre primero.",
+      "2. CORRER PASO2 (opción 5 del menú) — regenera BaseCostosPOSE.xlsx con datos correctos. El Loockups ya está revertido (COMPENSABLE TALLER). Este paso es obligatorio antes del bifurcador.",
+      "3. RESETEAR HASHES — Borrar output/b52/_hashes_anterior.csv. Los hashes cambiaron por el nuevo schema (3 columnas nuevas). Comando: del output\\b52\\_hashes_anterior.csv",
+      "4. CORRER BIFURCADOR (opción 7 del menú) — El nuevo CSV tendrá 3 columnas extra: GERENCIA, TC, IMPORTE_USD. Primera corrida: todos NUEVO (base limpia). Reportar totales.",
+      "5. VERIFICAR columnas del CSV generado — Abrir costos_b52_*.csv con Excel y confirmar que aparecen GERENCIA, TC, IMPORTE_USD entre las columnas (antes de _estado_carga). Reportar SI/NO."
     ],
-    "respuesta_esperada": "Documentar en ultimo_resultado: (1) totales corrida base (NUEVO/SIN_CAMBIO/MODIFICADO), (2) resultado prueba de regresión (COMPENSABLE: MODIFICADO detectado SI/NO), (3) fila usada en la prueba (obra, fecha, valor anterior → valor nuevo). Commit + push."
+    "respuesta_esperada": "Documentar en ultimo_resultado: (1) Paso2 ejecutado OK (SI/NO), (2) totales bifurcador (NUEVO/SIN_CAMBIO/MODIFICADO), (3) columnas GERENCIA/TC/IMPORTE_USD presentes en CSV (SI/NO). Commit + push del CSV en output/b52/."
   },
   "decisiones": {
     "hetzner_delta_csv": {

@@ -35,6 +35,9 @@ COLS_NEGOCIO: list[str] = [
     "RUBRO_CONTABLE",
     "CUENTA_CONTABLE",
     "COMPENSABLE",
+    "GERENCIA",
+    "TC",
+    "IMPORTE_USD",
 ]
 
 
