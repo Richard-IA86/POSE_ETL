@@ -16,13 +16,17 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Esperando respuesta de Isindur (docs/isindur_tareas_delegadas.md). Tareas M1 completadas hoy: bifurcador en menu opcion 7, COMPENSABLE 00000438 corregido en Loockups.xlsx (91cf845), roles Isindur sin prohibiciones rigidas (e749d78). Pendiente: morning_pipeline.py + recarga masiva dwgrupopose_b53_prod.",
-    "fecha_actualizacion": "2026-05-13"
+    "punto_de_partida_manana": "M1 vuelve de M2. Tareas M1 pendientes: (1) recarga masiva dwgrupopose_b53_prod desde costos_b52_20260514_023142.csv (output/b52/). (2) Verificar que Isindur completó limpieza de BaseCostosPOSE.xlsx y ETL A2 2026. (3) git pull antes de arrancar.",
+    "fecha_actualizacion": "2026-05-14"
   },
   "m2_pendiente": {
-    "tarea": "",
+    "tarea": "ISINDUR: 1 tarea pendiente — limpiar BaseCostosPOSE.xlsx",
     "fecha": "2026-05-14",
-    "detalle": []
+    "detalle": [
+      "1. LIMPIAR BaseCostosPOSE.xlsx — Abrir en Excel. Editor Power Query (Datos → Consultas y conexiones). Eliminar TODAS las queries internas (Con_Maestros, Dim_*, Archiv_Consolidado_*, Analisis_*). Dejar SOLO una query nueva llamada 'Datos_Finales' con este código M: let wb = Excel.Workbook(File.Contents(\"RUTA_ABSOLUTA\\BaseCostoUnificada.xlsx\"), null, true), datos = wb{[Name=\"Archiv_Consolidado_Final\"]}[Data] in datos. Reemplazar RUTA_ABSOLUTA por la ruta real del archivo en tu máquina. Cargar como tabla. Guardar. Esto elimina el reproceso completo en Fase 3 (actualmente recorre todas las fuentes desde cero).",
+      "2. ETL A2 2026 — Después de limpiar BaseCostosPOSE.xlsx, correr el ETL completo con datos nuevos de 2026: (a) Fase 1: python -m ETL_BaseA2.src.ingesta.normalizador_base_costos desde la raíz. (b) Fase 2+3: python ETL_BaseA2/scripts/Paso2_ActualizarPQ.py desde ETL_BaseA2/. El log de Fase 3 ahora va a mostrar el nombre real de la query en BaseCostosPOSE.xlsx — reportarlo en ultimo_resultado."
+    ],
+    "respuesta_esperada": "Commit + push con: BaseCostosPOSE.xlsx limpio (solo Datos_Finales) + log ETL A2 2026. Documentar en ultimo_resultado."
   },
   "decisiones": {
     "hetzner_delta_csv": {
@@ -65,16 +69,20 @@
       "fecha": "2026-05-14",
       "tareas_completadas": [
         "Bifurcador B52: rutas absolutas corregidas en bifurcador.py y lector.py (Path(__file__).resolve().parents[3])",
-        "Bifurcador B52: ejecutado con BaseCostosPOSE.xlsx actualizado — 473,098 filas, delta 302,036 (NUEVO 17,674 / MODIFICADO 284,362 / SIN_CAMBIO 171,062)",
-        "GestionComp: scraper debitos_creditos_bancarios implementado y probado en vivo (commit 401e53a)",
-        "morning_pipeline.py: rutas corregidas con Path() + C:\\Dev\\.gemini (commit 4e1e8eb en .gemini)"
+        "Bifurcador B52: ejecutado — 473,098 filas, delta 302,036 (NUEVO 17,674 / MODIFICADO 284,362 / SIN_CAMBIO 171,062)",
+        "GestionComp: scraper debitos_creditos_bancarios implementado y probado (commit 401e53a)",
+        "morning_pipeline.py: rutas corregidas con Path() + C:\\Dev\\.gemini (commit 4e1e8eb)",
+        "CSV bifurcador recibidos de M2 via pen → output/b52/ en M1",
+        "fix(etl_a2): Fase 3 Paso2_ActualizarPQ.py — BaseCostosPOSE.xlsx no refrescaba (falso positivo silencioso). Fix: iterar wb.Connections directamente. Commit e77c8d1.",
+        "Servidor Hetzner: verificado sincronizado — apps/docker-compose.yml + traefik + dynamic.yaml OK"
       ],
       "tareas_pendientes_manana": [
-        "[M1] Recibir costos_b52_20260514_023142_delta.csv (302,036 filas) y cargar en Hetzner → fact_costos_b52",
-        "[M1/M2] Migrar ejecución del bifurcador B52 a flujo Python integrado con GestionComp (reemplazar .bat)",
+        "[M1] Recarga masiva dwgrupopose_b53_prod desde costos_b52_20260514_023142.csv — IMPACTO ALTO, vaciar tabla y recargar completo",
+        "[M1/M2] Migrar ejecución bifurcador B52 a flujo Python integrado con GestionComp",
+        "[M2] Limpiar BaseCostosPOSE.xlsx: dejar solo query 'Datos_Finales' que lee Archiv_Consolidado_Final desde BaseCostoUnificada.xlsx. Luego ETL A2 2026.",
         "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar dato faltante"
       ],
-      "notas_qa": "Bifurcador operativo con datos frescos. Fix de rutas absolutas aplicado. GestionComp+scraper debitos/creditos funcionando. Todo listo para carga en Hetzner desde M1.",
+      "notas_qa": "Bifurcador operativo (473k filas). Fix Fase 3 aplicado (e77c8d1) — bug silencioso desde el inicio. morning_pipeline.py corregido. Tarea crítica al volver: recarga b53_prod.",
       "estado_pipeline": "VERDE"
     }
   }
