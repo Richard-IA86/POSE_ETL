@@ -96,15 +96,19 @@
         "Servidor Hetzner: verificado sincronizado.",
         "[M2] ETL A2 2026 completo: 538,250 registros, 44 archivos. Commits 2bab0c5 / 81c1bf3 / 774ee0c.",
         "[M1 sesión tarde] fix(bifurcador): COMPENSABLE en lector + hasher + escritor_csv. Commit 6d75ea4. black/flake8/mypy OK.",
-        "[M1 sesión tarde] m2_pendiente: instrucciones resetear hashes + corrida base + prueba regresión COMPENSABLE (fila enero 2021_2022_Historico)."
+        "[M1 sesión tarde] Prueba regresión COMPENSABLE APROBADA por Isindur (commit 2d6046b). CSV base limpia: costos_b52_20260514_180716.csv.",
+        "[M1 sesión tarde] Análisis archivos pen (RegPOSE_BD_PLANCUENTAS.xlsx): BaseCostosPOSE.xlsx tiene GERENCIA + TC + IMPORTE_USD — lector.py los descartaba por omisión.",
+        "feat(bifurcador): GERENCIA, TC, IMPORTE_USD agregadas a COLS_NEGOCIO (lector.py) y COLS_SALIDA (escritor_csv.py). Commit caa61fa. black/flake8/mypy OK.",
+        "m2_pendiente actualizado: Isindur debe correr Paso2 + resetear hashes + bifurcador para generar CSV con schema expandido."
       ],
       "tareas_pendientes_manana": [
-        "[M2] Correr opción 5 menu_ejecucion.bat (Paso2) para restaurar BaseCostosPOSE.xlsx con datos correctos (Loockups ya revertido).",
-        "[M1] ✅ Prueba regresión COMPENSABLE APROBADA — recarga masiva dwgrupopose_b53_prod desbloqueada. Usar CSV: output/b52/costos_b52_20260514_162457.csv (corrida base limpia post-fix). NO usar costos_b52_20260514_023142.csv (generado con bug).",
-        "[M1] Diseñar apertura por gerencia: dim_gerencias en PostgreSQL + endpoint en Pose_API + vista en Pose_Frontend.",
-        "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar."
+        "[BLOQUEANTE — esperar Isindur] Paso2 en M2 → BaseCostosPOSE.xlsx regenerado con Loockups correcto.",
+        "[BLOQUEANTE — esperar Isindur] Bifurcador en M2 → nuevo CSV con GERENCIA + TC + IMPORTE_USD + confirmar 3 columnas presentes.",
+        "[M1 — post Isindur] DROP fact_costos_b52 en Hetzner + carga masiva desde nuevo CSV (script src/loader/recarga_masiva_b53_prod.py a crear).",
+        "[M1 — post DROP] Actualizar endpoint Pose_API: usar GERENCIA de fact (eliminar JOIN obligatorio a dim). Mantener como fallback.",
+        "[M1 — post DROP] Verificar dashboard Pose_Frontend con datos nuevos en prod."
       ],
-      "notas_qa": "Prueba regresión COMPENSABLE APROBADA (2026-05-14). Fix 6d75ea4 verificado: obra 00000004, 9,049 filas detectadas como MODIFICADO. CSV base limpia: costos_b52_20260514_162457.csv (473,098 NUEVO). Recarga b53_prod desbloqueada.",
+      "notas_qa": "Schema bifurcador expandido (commit caa61fa). Pendiente: CSV nuevo de M2 con GERENCIA/TC/IMPORTE_USD antes del DROP. NO hacer DROP con CSV viejo (costos_b52_20260514_180716.csv) — le faltan las 3 columnas nuevas.",
       "estado_pipeline": "VERDE"
     }
   }
