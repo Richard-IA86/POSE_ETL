@@ -79,15 +79,19 @@
         "morning_pipeline.py: rutas corregidas con Path() + C:\\Dev\\.gemini (commit 4e1e8eb)",
         "CSV bifurcador recibidos de M2 via pen → output/b52/ en M1",
         "fix(etl_a2): Fase 3 Paso2_ActualizarPQ.py — BaseCostosPOSE.xlsx no refrescaba (falso positivo silencioso). Fix: iterar wb.Connections directamente. Commit e77c8d1.",
-        "Servidor Hetzner: verificado sincronizado — apps/docker-compose.yml + traefik + dynamic.yaml OK"
+        "Servidor Hetzner: verificado sincronizado — apps/docker-compose.yml + traefik + dynamic.yaml OK",
+        "[M2 jornada 2026-05-14] ETL A2 2026 completo: Fase 1 (538,250 registros, 44 archivos) + Fase 2+3 (12:02, BaseCostoUnificada + BaseCostosPOSE actualizados). Commit 2bab0c5.",
+        "[M2 jornada 2026-05-14] fix: BaseCostoPOSE.pq ruta corregida (faltaba ETL_BaseA2). Paso2_ActualizarPQ.py: RUTAS_OBSOLETAS ampliado. Prueba Fase 3 aislada: 46s OK. Commit 81c1bf3.",
+        "[M2 jornada 2026-05-14] Protocolo fix 'Sauron crea → Isindur hace funcionar → Sauron verifica' documentado en copilot-instructions.md. Hallazgo OLEDBConnection documentado. Commit 774ee0c."
       ],
       "tareas_pendientes_manana": [
         "[M1] Recarga masiva dwgrupopose_b53_prod desde costos_b52_20260514_023142.csv — IMPACTO ALTO, vaciar tabla y recargar completo",
+        "[M1] FIX BIFURCADOR: agregar COMPENSABLE a COLS_NEGOCIO (lector.py), extender _sha256_importe con COMPENSABLE+CODIGO_CUENTA (hasher.py), agregar COMPENSABLE a COLS_SALIDA (escritor_csv.py). Post-fix: resetear _hashes_anterior.csv (M2 ejecuta).",
+        "[M1] Evaluar Param_RutaBase en BaseCostosPOSE.xlsx para evitar ruta hardcodeada al cambiar de máquina (OLEDBConnection.CommandText no expone código M en PQ).",
         "[M1/M2] Migrar ejecución bifurcador B52 a flujo Python integrado con GestionComp",
-        "[M2] Limpiar BaseCostosPOSE.xlsx: dejar solo query 'Datos_Finales' que lee Archiv_Consolidado_Final desde BaseCostoUnificada.xlsx. Luego ETL A2 2026.",
         "[M1] Loockups.xlsx obra 00000438 BARRIO EL MOLINO: COMPENSABLE es NULL — verificar dato faltante"
       ],
-      "notas_qa": "Bifurcador operativo (473k filas). Fix Fase 3 aplicado (e77c8d1) — bug silencioso desde el inicio. morning_pipeline.py corregido. Tarea crítica al volver: recarga b53_prod.",
+      "notas_qa": "Bifurcador operativo pero con bug de hashes (COMPENSABLE+CODIGO_CUENTA invisibles) — fix pendiente de M1. ETL A2 2026 OK. BaseCostosPOSE.xlsx operativo con query 'Datos_Finales'. Tarea crítica al volver: recarga b53_prod + fix bifurcador.",
       "estado_pipeline": "VERDE"
     }
   }
