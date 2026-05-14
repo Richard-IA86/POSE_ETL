@@ -101,6 +101,25 @@
       ],
       "notas_qa": "Schema bifurcador expandido (commit caa61fa). Pendiente: CSV nuevo de M2 con GERENCIA/TC/IMPORTE_USD antes del DROP. NO hacer DROP con CSV viejo (costos_b52_20260514_180716.csv) — le faltan las 3 columnas nuevas.",
       "estado_pipeline": "VERDE"
+    },
+    "fin_2026_05_14_tarde": {
+      "fecha": "2026-05-14",
+      "tareas_completadas": [
+        "Paso2_ActualizarPQ.py ejecutado — BaseCostosPOSE.xlsx regenerado con Loockups correcto (COMPENSABLE TALLER). Tiempo: 11:33.",
+        "Hashes reseteados — _hashes_anterior.csv no existía (corrida limpia confirmada).",
+        "Bifurcador corrido con schema expandido — 473,098 filas, NUEVO=473,098 / MODIFICADO=0 / SIN_CAMBIO=0. CSV: costos_b52_20260514_203946.csv.",
+        "Columnas verificadas — GERENCIA=PRESENTE, TC=PRESENTE, IMPORTE_USD=PRESENTE (22 columnas). Schema OK.",
+        "CSV viejos de corrida anterior (180716) eliminados de output/b52/. Directorio limpio.",
+        "estado_proyecto.json actualizado y pusheado (commit 907e4c3). Bloqueo DROP Hetzner levantado.",
+        "CSV nuevo entregado a M1 vía USB."
+      ],
+      "tareas_pendientes_manana": [
+        "[M1] DROP fact_costos_b52 en Hetzner + carga masiva desde costos_b52_20260514_203946.csv.",
+        "[M1] Actualizar endpoint Pose_API: usar GERENCIA de fact.",
+        "[M1] Verificar dashboard Pose_Frontend con datos nuevos en prod."
+      ],
+      "notas_qa": "CSV con schema expandido (GERENCIA+TC+IMPORTE_USD) generado y entregado. Bloqueos M2 resueltos. Próxima acción: M1.",
+      "estado_pipeline": "VERDE"
     }
   }
 }
