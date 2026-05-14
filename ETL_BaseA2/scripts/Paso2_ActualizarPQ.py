@@ -592,6 +592,14 @@ def main():
 
         # Corregir ruta dentro de la query PQ embebida si apunta al repo viejo
         PREFIJOS_PQ = ("Query - ", "Consulta - ")
+        # Rutas obsoletas conocidas que deben ser reemplazadas por
+        # ruta_unificada (la ruta correcta a BaseCostoUnificada.xlsx).
+        RUTAS_OBSOLETAS = [
+            ruta_vieja,  # repo viejo Planif_POSE
+            # ruta sin ETL_BaseA2 (bug detectado 2026-05-14)
+            str(Path(ruta_unificada).parent.parent / "power_query"
+                / "BaseCostoUnificada.xlsx"),
+        ]
         for conn in wb_reservorio.Connections:
             nombre = conn.Name
             for p in PREFIJOS_PQ:
@@ -600,12 +608,22 @@ def main():
                     break
             try:
                 formula = conn.OLEDBConnection.CommandText
-                if isinstance(formula, str) and "Planif_POSE" in formula:
-                    formula_nueva = formula.replace(ruta_vieja, ruta_unificada)
-                    conn.OLEDBConnection.CommandText = formula_nueva
-                    if logger:
-                        logger.info(f"Ruta corregida en query '{nombre}'")
-                    print(f"   Ruta corregida en query '{nombre}'")
+                if not isinstance(formula, str):
+                    continue
+                for ruta_obs in RUTAS_OBSOLETAS:
+                    if ruta_obs in formula:
+                        formula = formula.replace(
+                            ruta_obs, ruta_unificada
+                        )
+                        conn.OLEDBConnection.CommandText = formula
+                        if logger:
+                            logger.info(
+                                f"Ruta corregida en query '{nombre}'"
+                            )
+                        print(
+                            f"   Ruta corregida en query '{nombre}'"
+                        )
+                        break
             except Exception:
                 pass
 
