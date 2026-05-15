@@ -26,20 +26,14 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Leer lectura_obligatoria primero. Luego: (1) git pull. (2) Ver ultimo_resultado de Isindur — confirmar prueba regresión COMPENSABLE. (3) Si OK: recargar b53_prod desde nuevo CSV M2. (4) Diseñar apertura por gerencia.",
-    "fecha_actualizacion": "2026-05-14"
+    "punto_de_partida_manana": "Recarga masiva COMPLETADA (473,098 filas). API fix pusheado — GH Actions buildea imagen y deploya. Verificar dashboard en prod (https://api.gestionpose.com.ar/api/v1/b53/dashboard-data) — months/gerencias_list deben estar poblados post-deploy. Pendiente: investigar GERENCIA vacia en fact (BaseCostosPOSE.xlsx M2).",
+    "fecha_actualizacion": "2026-05-15"
   },
   "m2_pendiente": {
-    "tarea": "ISINDUR: correr Paso2 + bifurcador con schema expandido (GERENCIA, TC, IMPORTE_USD)",
-    "fecha": "2026-05-14",
-    "detalle": [
-      "1. GIT PULL — siempre primero.",
-      "2. CORRER PASO2 (opción 5 del menú) — regenera BaseCostosPOSE.xlsx con datos correctos. El Loockups ya está revertido (COMPENSABLE TALLER). Este paso es obligatorio antes del bifurcador.",
-      "3. RESETEAR HASHES — Borrar output/b52/_hashes_anterior.csv. Los hashes cambiaron por el nuevo schema (3 columnas nuevas). Comando: del output\\b52\\_hashes_anterior.csv",
-      "4. CORRER BIFURCADOR (opción 7 del menú) — El nuevo CSV tendrá 3 columnas extra: GERENCIA, TC, IMPORTE_USD. Primera corrida: todos NUEVO (base limpia). Reportar totales.",
-      "5. VERIFICAR columnas del CSV generado — Abrir costos_b52_*.csv con Excel y confirmar que aparecen GERENCIA, TC, IMPORTE_USD entre las columnas (antes de _estado_carga). Reportar SI/NO."
-    ],
-    "respuesta_esperada": "Documentar en ultimo_resultado: (1) Paso2 ejecutado OK (SI/NO), (2) totales bifurcador (NUEVO/SIN_CAMBIO/MODIFICADO), (3) columnas GERENCIA/TC/IMPORTE_USD presentes en CSV (SI/NO). Commit + push del CSV en output/b52/."
+    "tarea": "",
+    "fecha": "2026-05-15",
+    "detalle": [],
+    "respuesta_esperada": ""
   },
   "decisiones": {
     "hetzner_delta_csv": {
@@ -51,11 +45,18 @@
   },
   "alertas_pendientes": {
     "recarga_b53_prod": {
+      "estado": "COMPLETADO",
+      "descripcion": "Recarga masiva DROP + INSERT ejecutada el 2026-05-15. 473,098 filas cargadas en fact_costos_b52. Schema expandido con TC e IMPORTE_USD.",
+      "impacto": "ALTO — completado exitosamente",
+      "accion": "COMPLETADO — COUNT(*) DB = 473,098 = filas CSV.",
+      "fecha": "2026-05-15"
+    },
+    "gerencia_en_fact": {
       "estado": "PENDIENTE",
-      "descripcion": "dwgrupopose_b53_prod: lo cargado actualmente no sirve. El cambio en la columna COMPENSABLE genera un delta casi masivo. Requiere recarga completa de la tabla antes de activar carga incremental.",
-      "impacto": "ALTO — afecta casi todos los registros historicos",
-      "accion": "Vaciar tabla en Hetzner y recargar desde el CSV completo que genera el bifurcador (costos_b52_*_completo.csv). Coordinar con M1 antes de ejecutar.",
-      "fecha": "2026-05-13"
+      "descripcion": "GERENCIA es NULL en todos los registros de fact_costos_b52. BaseCostosPOSE.xlsx en M2 genera la columna vacia. La API usa COALESCE(dim.gerencia, fact.GERENCIA) — funciona via dim_obras_gerencias como fallback.",
+      "impacto": "MEDIO — dashboard funciona via JOIN a dim, pero GERENCIA en fact queda sin datos.",
+      "accion": "Investigar por que BaseCostosPOSE.xlsx genera GERENCIA vacia en M2. Candidato: la query PQ no hace el lookup a Loockups.xlsx para esta columna.",
+      "fecha": "2026-05-15"
     }
   },
   "diagnosticos": {
@@ -67,12 +68,12 @@
     }
   },
   "ultimo_resultado": {
-    "ejecutado_por": "Isindur (M2)",
-    "fecha": "2026-05-14",
-    "tarea": "Schema expandido (GERENCIA, TC, IMPORTE_USD) — Paso2 + reset hashes + bifurcador",
-    "resultado": "ÉXITO TOTAL. (1) PASO2 OK: Paso2_ActualizarPQ.py ejecutado — BaseCostosPOSE.xlsx regenerado con Loockups correcto (COMPENSABLE TALLER). Tiempo total: 11:33. (2) RESET HASHES: _hashes_anterior.csv no existía (limpio de corrida anterior). (3) BIFURCADOR OK: 473,098 filas leídas, importe -52.534.104.883,83, rango 2019-2026. NUEVO=473,098 / MODIFICADO=0 / SIN_CAMBIO=0. Primera corrida base limpia con schema expandido. CSV: output/b52/costos_b52_20260514_203946.csv. (4) COLUMNAS VERIFICADAS: GERENCIA=PRESENTE, TC=PRESENTE, IMPORTE_USD=PRESENTE (22 columnas totales, en posición 17-18-19 antes de _estado_carga).",
-    "errores": "Ninguno.",
-    "commit": "2026-05-14 — chore(m2): resultado schema expandido GERENCIA+TC+IMPORTE_USD"
+    "ejecutado_por": "M1 (Sauron)",
+    "fecha": "2026-05-15",
+    "tarea": "Recarga masiva fact_costos_b52 en Hetzner PROD + fix API dashboard",
+    "resultado": "EXITO. DROP + recreación + carga masiva completada: 473,098 filas en 10 batches (BATCH_SIZE=50k). COUNT(*) DB = 473,098 = filas CSV. Schema nuevo: 17 cols (incluye TC, IMPORTE_USD). GERENCIA cargada NULL (BaseCostosPOSE.xlsx en M2 genera columna vacía — investigar). Fix API (Pose_API commit 39df32d): query principal ahora usa COALESCE(dim.gerencia, fact.GERENCIA) con LEFT JOIN dim_obras_gerencias — dashboard funcional via dim fallback. GH Actions desplegando imagen actualizada.",
+    "errores": "GERENCIA NULL en fact_costos_b52 (todos los registros). No bloquea dashboard — API usa dim_obras_gerencias como fallback via COALESCE.",
+    "commit": "POSE_ETL: pendiente. Pose_API: 39df32d (pusheado)."
   },
   "jornada": {
     "fin": {
@@ -100,25 +101,6 @@
         "[M1 — post DROP] Verificar dashboard Pose_Frontend con datos nuevos en prod."
       ],
       "notas_qa": "Schema bifurcador expandido (commit caa61fa). Pendiente: CSV nuevo de M2 con GERENCIA/TC/IMPORTE_USD antes del DROP. NO hacer DROP con CSV viejo (costos_b52_20260514_180716.csv) — le faltan las 3 columnas nuevas.",
-      "estado_pipeline": "VERDE"
-    },
-    "fin_2026_05_14_tarde": {
-      "fecha": "2026-05-14",
-      "tareas_completadas": [
-        "Paso2_ActualizarPQ.py ejecutado — BaseCostosPOSE.xlsx regenerado con Loockups correcto (COMPENSABLE TALLER). Tiempo: 11:33.",
-        "Hashes reseteados — _hashes_anterior.csv no existía (corrida limpia confirmada).",
-        "Bifurcador corrido con schema expandido — 473,098 filas, NUEVO=473,098 / MODIFICADO=0 / SIN_CAMBIO=0. CSV: costos_b52_20260514_203946.csv.",
-        "Columnas verificadas — GERENCIA=PRESENTE, TC=PRESENTE, IMPORTE_USD=PRESENTE (22 columnas). Schema OK.",
-        "CSV viejos de corrida anterior (180716) eliminados de output/b52/. Directorio limpio.",
-        "estado_proyecto.json actualizado y pusheado (commit 907e4c3). Bloqueo DROP Hetzner levantado.",
-        "CSV nuevo entregado a M1 vía USB."
-      ],
-      "tareas_pendientes_manana": [
-        "[M1] DROP fact_costos_b52 en Hetzner + carga masiva desde costos_b52_20260514_203946.csv.",
-        "[M1] Actualizar endpoint Pose_API: usar GERENCIA de fact.",
-        "[M1] Verificar dashboard Pose_Frontend con datos nuevos en prod."
-      ],
-      "notas_qa": "CSV con schema expandido (GERENCIA+TC+IMPORTE_USD) generado y entregado. Bloqueos M2 resueltos. Próxima acción: M1.",
       "estado_pipeline": "VERDE"
     }
   }
