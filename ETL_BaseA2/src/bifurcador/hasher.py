@@ -3,7 +3,9 @@ hasher.py — Control incremental por hash de fila.
 
 Calcula dos hashes SHA-256 por registro:
   _hash_fila    → identidad del registro (clave de negocio)
-  _hash_importe → identidad + valor (detecta cambio de importe)
+  _hash_importe → identidad + valor + atributos clave
+                  (detecta cambio de importe, gerencia,
+                  compensable o código de cuenta)
 
 Clave de negocio:
   OBRA_PRONTO + FECHA + FUENTE + TIPO_COMPROBANTE + NRO_COMPROBANTE
@@ -51,12 +53,14 @@ def _sha256_importe(
     importe: float,
     compensable: str,
     codigo_cuenta: str,
+    gerencia: str,
 ) -> str:
-    """SHA-256 de identidad + importe + compensable + cuenta."""
+    """SHA-256 de identidad + importe + compensable + cuenta + gerencia."""
     contenido = (
         f"{hash_fila}|{importe:.6f}"
         f"|{compensable.strip().upper()}"
         f"|{codigo_cuenta.strip().upper()}"
+        f"|{gerencia.strip().upper()}"
     )
     return hashlib.sha256(contenido.encode("utf-8")).hexdigest()
 
@@ -91,13 +95,19 @@ def calcular_hashes(df: pd.DataFrame) -> pd.DataFrame:
         if "CODIGO_CUENTA" in df.columns
         else pd.Series("", index=df.index)
     )
+    gerencia_vals = (
+        df.get("GERENCIA", pd.Series("", index=df.index))
+        .fillna("")
+        .astype(str)
+    )
     df["_hash_importe"] = [
-        _sha256_importe(hf, imp, comp, cc)
-        for hf, imp, comp, cc in zip(
+        _sha256_importe(hf, imp, comp, cc, ger)
+        for hf, imp, comp, cc, ger in zip(
             df["_hash_fila"],
             importe_num,
             compensable_vals,
             codigo_cuenta_vals,
+            gerencia_vals,
         )
     ]
 

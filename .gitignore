@@ -41,6 +41,7 @@ power_query/BaseCostoUnificada.xlsx
 
 # Outputs — archivos generados, nunca versionar
 output/b52/*.csv
+!output/b52/_hashes_anterior.csv
 output/director/*.parquet
 output/director/*.xlsx
 output/output_normalized/
