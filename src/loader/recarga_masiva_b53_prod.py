@@ -183,8 +183,8 @@ def _insertar(df: pd.DataFrame, engine: Any) -> int:
 
 
 def _poblar_gerencia(engine: Any) -> int:
-    """UPDATE GERENCIA en fact desde dim_obras_gerencias."""
-    print("\n[4/5] Poblando GERENCIA desde dim_obras_gerencias...")
+    """Sincroniza GERENCIA con dim_obras_gerencias y retorna total no nulo."""
+    print("\n[4/5] Sincronizando GERENCIA con dim_obras_gerencias...")
     with engine.begin() as conn:
         r = conn.execute(text("""
                 UPDATE fact_costos_b52 f
@@ -194,9 +194,17 @@ def _poblar_gerencia(engine: Any) -> int:
                   AND d.gerencia IS NOT NULL
                   AND d.gerencia != ''
             """))
-        actualizadas = r.rowcount
-    print(f"      ✅ {actualizadas:,} filas con GERENCIA poblada.")
-    return actualizadas
+        sincronizadas = r.rowcount
+    print(f"      ↳ {sincronizadas:,} filas sincronizadas con dim.")
+    with engine.connect() as conn:
+        row = conn.execute(text("""
+                SELECT COUNT(*) FROM fact_costos_b52
+                WHERE "GERENCIA" IS NOT NULL
+                  AND "GERENCIA" != ''
+            """)).fetchone()
+        total_ger = row[0] if row else 0
+    print(f"      ✅ GERENCIA no nula en DB: {total_ger:,}")
+    return total_ger
 
 
 def _validar(engine: Any, insertadas: int, gerencia: int) -> None:
