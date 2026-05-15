@@ -29,8 +29,26 @@ from sqlalchemy import create_engine, text
 
 # ── Rutas ────────────────────────────────────────────────────────────────────
 _REPO_ROOT = pathlib.Path(__file__).resolve().parents[2]
-_CSV_PATH = _REPO_ROOT / "output" / "b52" / "costos_b52_20260514_203946.csv"
 _ENV_PATH = _REPO_ROOT / "config" / ".env"
+
+
+def _detectar_csv() -> pathlib.Path:
+    """Retorna el CSV completo más reciente en output/b52/."""
+    directorio = _REPO_ROOT / "output" / "b52"
+    candidatos = sorted(
+        [
+            p
+            for p in directorio.glob("costos_b52_*.csv")
+            if "_delta" not in p.name and "_hashes" not in p.name
+        ],
+        key=lambda p: p.stat().st_mtime,
+        reverse=True,
+    )
+    if not candidatos:
+        print(f"❌ No hay CSV en {directorio}")
+        sys.exit(1)
+    return candidatos[0]
+
 
 # ── Parámetros ───────────────────────────────────────────────────────────────
 TABLA = "fact_costos_b52"
@@ -108,7 +126,7 @@ def _ping(engine: Any) -> None:
 
 
 def _drop_and_create(engine: Any) -> None:
-    print(f"\n[1/4] DROP + CREATE {TABLA}...")
+    print(f"\n[1/5] DROP + CREATE {TABLA}...")
     with engine.begin() as conn:
         conn.execute(text(f'DROP TABLE IF EXISTS "{TABLA}";'))
         conn.execute(text(DDL_CREAR_TABLA))
@@ -116,12 +134,10 @@ def _drop_and_create(engine: Any) -> None:
 
 
 def _cargar_csv() -> pd.DataFrame:
-    print(f"\n[2/4] Leyendo CSV: {_CSV_PATH.name}...")
-    if not _CSV_PATH.exists():
-        print(f"❌ CSV no encontrado: {_CSV_PATH}")
-        sys.exit(1)
+    csv_path = _detectar_csv()
+    print(f"\n[2/5] Leyendo CSV: {csv_path.name}...")
     df = pd.read_csv(
-        _CSV_PATH,
+        csv_path,
         sep="|",
         usecols=COLS_DESTINO,
         dtype=str,
@@ -145,7 +161,7 @@ def _insertar(df: pd.DataFrame, engine: Any) -> int:
     insertadas = 0
     n_batches = (total // BATCH_SIZE) + (1 if total % BATCH_SIZE else 0)
     print(
-        f"\n[3/4] Insertando {total:,} filas"
+        f"\n[3/5] Insertando {total:,} filas"
         f" en {n_batches} batches de {BATCH_SIZE:,}..."
     )
     for i in range(0, total, BATCH_SIZE):
@@ -166,15 +182,33 @@ def _insertar(df: pd.DataFrame, engine: Any) -> int:
     return insertadas
 
 
-def _validar(engine: Any, insertadas: int) -> None:
-    print("\n[4/4] Validando COUNT(*) en Hetzner...")
+def _poblar_gerencia(engine: Any) -> int:
+    """UPDATE GERENCIA en fact desde dim_obras_gerencias."""
+    print("\n[4/5] Poblando GERENCIA desde dim_obras_gerencias...")
+    with engine.begin() as conn:
+        r = conn.execute(text("""
+                UPDATE fact_costos_b52 f
+                SET "GERENCIA" = d.gerencia
+                FROM dim_obras_gerencias d
+                WHERE f."OBRA_PRONTO" = d.obra_pronto
+                  AND d.gerencia IS NOT NULL
+                  AND d.gerencia != ''
+            """))
+        actualizadas = r.rowcount
+    print(f"      ✅ {actualizadas:,} filas con GERENCIA poblada.")
+    return actualizadas
+
+
+def _validar(engine: Any, insertadas: int, gerencia: int) -> None:
+    print("\n[5/5] Validando COUNT(*) en Hetzner...")
     with engine.connect() as conn:
         row = conn.execute(text(f'SELECT COUNT(*) FROM "{TABLA}"')).fetchone()
         count_db = row[0] if row else 0
 
-    print(f"      Filas CSV     : {insertadas:,}")
-    print(f"      COUNT(*) DB   : {count_db:,}")
-    print(f"      Filas esperadas: {FILAS_ESPERADAS:,}")
+    print(f"      Filas CSV        : {insertadas:,}")
+    print(f"      COUNT(*) DB      : {count_db:,}")
+    print(f"      GERENCIA poblada : {gerencia:,}")
+    print(f"      Filas esperadas  : {FILAS_ESPERADAS:,}")
 
     if count_db == insertadas == FILAS_ESPERADAS:
         print("\n✅ RECARGA COMPLETA — todo cuadra.")
@@ -203,7 +237,8 @@ def main() -> None:
     df = _cargar_csv()
     df = _convertir_tipos(df)
     insertadas = _insertar(df, engine)
-    _validar(engine, insertadas)
+    gerencia = _poblar_gerencia(engine)
+    _validar(engine, insertadas, gerencia)
 
 
 if __name__ == "__main__":
