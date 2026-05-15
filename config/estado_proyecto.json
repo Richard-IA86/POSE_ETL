@@ -68,12 +68,12 @@
     }
   },
   "ultimo_resultado": {
-    "ejecutado_por": "M1 (Sauron)",
+    "ejecutado_por": "M2 (Isindur)",
     "fecha": "2026-05-15",
-    "tarea": "Recarga masiva fact_costos_b52 en Hetzner PROD + fix API dashboard",
-    "resultado": "EXITO. DROP + recreación + carga masiva completada: 473,098 filas en 10 batches (BATCH_SIZE=50k). COUNT(*) DB = 473,098 = filas CSV. Schema nuevo: 17 cols (incluye TC, IMPORTE_USD). GERENCIA cargada NULL (BaseCostosPOSE.xlsx en M2 genera columna vacía — investigar). Fix API (Pose_API commit 39df32d): query principal ahora usa COALESCE(dim.gerencia, fact.GERENCIA) con LEFT JOIN dim_obras_gerencias — dashboard funcional via dim fallback. GH Actions desplegando imagen actualizada.",
-    "errores": "GERENCIA NULL en fact_costos_b52 (todos los registros). No bloquea dashboard — API usa dim_obras_gerencias como fallback via COALESCE.",
-    "commit": "POSE_ETL: pendiente. Pose_API: 39df32d (pusheado)."
+    "tarea": "fix(bifurcador): GERENCIA en _hash_importe + hash base regenerado",
+    "resultado": "EXITO. hasher.py corregido: GERENCIA agregada a _sha256_importe (junto a COMPENSABLE y CODIGO_CUENTA). Hash base regenerado desde cero: 473,098 filas, primera corrida limpia. Verificacion: OBRA_PRONTO + GERENCIA + COMPENSABLE al 100% (0 vacios). Script validar_cobertura_csv.py creado para post-bifurcador. CSVs en output/b52/ listos para transferencia a M1 via pen.",
+    "errores": "Ninguno.",
+    "commit": "POSE_ETL: 88b25d0 (pusheado)."
   },
   "jornada": {
     "fin": {
