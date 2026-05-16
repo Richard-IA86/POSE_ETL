@@ -1,5 +1,5 @@
 # REPORTE DE INGESTA AUTOMATIZADA
-Fecha: 2026-05-14 15:23:47
+Fecha: 2026-05-15 10:49:01
 ------------------------------------------------------------
 
 ## Carpeta: 2023_2025_Hist
@@ -49,7 +49,7 @@ Fecha: 2026-05-14 15:23:47
 ## Carpeta: 2025_Ajustes
 | Archivo | Hoja Detectada | Estado | Filas | Sin Fecha |
 |---|---|---|---|---|
-| AJUSTES.xlsx | Tabla | ✅ Procesado | 1196 | 0 |
+| AJUSTES.xlsx | Tabla | ✅ Procesado | 1181 | 0 |
 
 ## Carpeta: 2026
 | Archivo | Hoja Detectada | Estado | Filas | Sin Fecha |
@@ -57,7 +57,7 @@ Fecha: 2026-05-14 15:23:47
 | 2026-01 COSTOS GERENCIAS.xlsx | Informe Mensual | ✅ Procesado | 17877 | 0 |
 | 2026-02 COSTOS GERENCIAS.xlsx | Informe Mensual | ✅ Procesado | 17556 | 0 |
 | 2026-03 COSTOS GERENCIAS.xlsx | Informe Mensual | ✅ Procesado | 17599 | 0 |
-| 2026-04 COSTOS GERENCIAS.xlsx | Informe Mensual | ✅ Procesado | 17228 | 0 |
+| 2026-04 COSTOS GERENCIAS.xlsx | Informe Mensual | ✅ Procesado | 17242 | 0 |
 
 ## Carpeta: BD_Compensaciones_2025
 | Archivo | Hoja Detectada | Estado | Filas | Sin Fecha |
