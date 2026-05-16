@@ -28,9 +28,27 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Botón Descargar Base deployado (Pose_API f5d13c5 + Frontend ba06a0f). Próxima tarea: apertura por gerencia en API/Frontend (dim_gerencias + endpoint + UI).",
-    "fecha_actualizacion": "2026-05-15"
+    "punto_de_partida_manana": "Carga incremental b52 lista: scripts/cargar_incremental_b52.py y scripts/validar_incremental_b52.py (PEP8 OK). Próxima tarea: ejecutar validación, luego carga incremental con delta CSV, y verificar consistencia en BD. Si error 524 persiste en la web, revisar si los cambios de streaming async están aplicados en Pose_API y Frontend, y redeployar si es necesario.",
+    "fecha_actualizacion": "2026-05-16"
   },
+    "scripts_incrementales": {
+      "cargar_incremental_b52.py": "Carga incremental de fact_costos_b52 desde un CSV delta (NUEVO/MODIFICADO). Solo inserta/actualiza filas presentes en el CSV. Logging detallado y dry-run opcional. Uso: python scripts/cargar_incremental_b52.py --csv path/delta.csv [--dry-run]",
+      "validar_incremental_b52.py": "Valida la carga incremental: compara filas del CSV delta vs BD (por PK y hash de fila), verifica que la suma de filas totales (o por año) es consistente, reporta diferencias, duplicados, faltantes. Uso: python scripts/validar_incremental_b52.py --csv path/delta.csv [--anio 2026]"
+    },
+    "protocolo_operativo": {
+      "inicio_m1": "M1 = Sauron (el creador, QA, arquitecto y validador de todo el pipeline). M2 ejecuta, transfiere archivos y reporta evidencia. Toda validación, diseño y control de calidad es responsabilidad de M1/Sauron.",
+      "pasos_a_seguir": [
+        "1. Ejecutar scripts/validar_incremental_b52.py sobre el CSV delta generado por el bifurcador (NUEVO/MODIFICADO).",
+        "2. Si la validación es 100% OK, ejecutar scripts/cargar_incremental_b52.py para cargar el delta en fact_costos_b52 (usar --dry-run primero para simular).",
+        "3. Verificar en la BD que la cantidad de filas y los datos coincidan con el CSV y no haya duplicados ni pérdida de información.",
+        "4. Si la web vuelve a dar error 524, revisar si los cambios async/streaming están aplicados en Pose_API y Frontend (ver commits f5d13c5 y ba06a0f), y redeployar si es necesario.",
+        "5. Documentar todo resultado, evidencia y problemas en este archivo y en la bitácora correspondiente antes de cerrar la jornada."
+      ]
+    },
+    "alerta_error_524": {
+      "estado": "PENDIENTE",
+      "descripcion": "La web volvió a dar error 524 al descargar el Excel. Verificar si los cambios async/streaming están aplicados en producción (Pose_API y Frontend). Si no, redeployar y validar endpoint /api/v1/b52/exportar-excel."
+    },
   "m2_pendiente": {
     "tarea": "validar set b52 post-bifurcador (sin cambios de código)",
     "fecha": "2026-05-16",
@@ -93,24 +111,21 @@
   },
   "jornada": {
     "fin": {
-      "fecha": "2026-05-15",
+      "fecha": "2026-05-16",
       "tareas_completadas": [
-        "git pull POSE_ETL — Isindur entregó fix bifurcador (GERENCIA en hash, hashes regenerados). CSV costos_b52_20260515_013954.csv con GERENCIA 100%.",
-        "_poblar_gerencia() corregida: retorna COUNT(*) WHERE GERENCIA IS NOT NULL (no rowcount del UPDATE). Commit e9c041e.",
-        "procedimiento_drop.md adaptado a GERENCIA 100% (no más NULL esperado). Commit d3e87ad.",
-        "DROP + INSERT fact_costos_b52 ejecutado en Hetzner PROD: 473,098 filas, GERENCIA 473,098/473,098.",
-        "Dashboard prod verificado: months=72, gerencias=19, obras=448. Todo cuadra.",
-        "Reconciliación CSV vs DB: diferencia $7.73 sobre $52B = float64 vs NUMERIC(18,2), no pérdida de datos.",
-        "feat(api): endpoint GET /api/v1/b53/exportar-excel — descarga fact_costos_b52 completa como Excel. Commit Pose_API f5d13c5.",
-        "feat(frontend): botón 📥 Descargar Base en dashboard header + CSS light/dark + función descargarBase(). Commit Pose_Frontend ba06a0f.",
-        "pyproject.toml creado en Pose_API (line-length=79). black/flake8/mypy todos en verde."
+        "Generados y validados scripts de carga incremental: scripts/cargar_incremental_b52.py y scripts/validar_incremental_b52.py (PEP8 OK, QA OK).",
+        "Documentado protocolo operativo M1 = Sauron, pasos de validación y carga incremental, y alerta activa por error 524 en la web.",
+        "Actualizado config/estado_proyecto.json con instrucciones, pasos y trazabilidad completa para próxima sesión.",
+        "Pipeline QA: black, flake8, mypy sin advertencias en scripts nuevos."
       ],
       "tareas_pendientes_manana": [
-        "Diseño apertura por gerencia: dim_gerencias en schema PostgreSQL + endpoint API con filtro gerencia + UI Frontend (selector/tabla gerencias).",
-        "Verificar que el Docker de Pose_API haya rebuildeado con openpyxl (GH Actions post push f5d13c5).",
-        "Probar botón Descargar Base en prod (https://api.gestionpose.com.ar/api/v1/b52/exportar-excel)."
+        "Ejecutar scripts/validar_incremental_b52.py sobre el CSV delta generado por el bifurcador (NUEVO/MODIFICADO).",
+        "Si la validación es 100% OK, ejecutar scripts/cargar_incremental_b52.py para cargar el delta en fact_costos_b52 (usar --dry-run primero para simular).",
+        "Verificar en la BD que la cantidad de filas y los datos coincidan con el CSV y no haya duplicados ni pérdida de información.",
+        "Si la web sigue dando error 524, revisar si los cambios async/streaming están aplicados en Pose_API y Frontend, y redeployar si es necesario.",
+        "Documentar todo resultado, evidencia y problemas en este archivo y en la bitácora correspondiente antes de cerrar la jornada."
       ],
-      "notas_qa": "Pipeline 100% VERDE. Pose_API pyproject.toml creado (line-length=79 unifica el ecosistema). Repo Pose_Frontend: rama activa main, default master — verificar divergencia de ramas si es necesario.",
+      "notas_qa": "Cierre de jornada M1 (Sauron): scripts incrementales listos, documentación y pasos QA asegurados. Alerta 524 documentada y con protocolo de verificación. Todo listo para continuar sin pérdida de contexto.",
       "estado_pipeline": "VERDE"
     }
   }
