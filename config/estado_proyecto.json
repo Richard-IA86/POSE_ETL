@@ -28,7 +28,7 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Carga incremental b52 lista: scripts/cargar_incremental_b52.py y scripts/validar_incremental_b52.py (PEP8 OK). Próxima tarea: ejecutar validación, luego carga incremental con delta CSV, y verificar consistencia en BD. Si error 524 persiste en la web, revisar si los cambios de streaming async están aplicados en Pose_API y Frontend, y redeployar si es necesario.",
+    "punto_de_partida_manana": "M2 ejecuto bifurcador y validacion de cobertura 100% con corrida 20260516_190833. M1 debe ejecutar validar_incremental_b52.py y cargar_incremental_b52.py (dry-run + carga real) sobre output/b52/costos_b52_20260516_190833_delta.csv y verificar consistencia en BD.",
     "fecha_actualizacion": "2026-05-16"
   },
     "scripts_incrementales": {
@@ -50,16 +50,10 @@
       "descripcion": "La web volvió a dar error 524 al descargar el Excel. Verificar si los cambios async/streaming están aplicados en producción (Pose_API y Frontend). Si no, redeployar y validar endpoint /api/v1/b52/exportar-excel."
     },
   "m2_pendiente": {
-    "tarea": "validar set b52 post-bifurcador (sin cambios de código)",
+    "tarea": "",
     "fecha": "2026-05-16",
-    "detalle": [
-      "NO tocar bifurcador.py ni scripts de hashing: quedaron correctos.",
-      "Ejecutar: python scripts/validar_cobertura_csv.py",
-      "Validar cobertura 100% en columnas clave del director: OBRA_PRONTO, GERENCIA, COMPENSABLE.",
-      "Adjuntar evidencia en ultimo_resultado: archivo procesado, total filas, vacíos por columna, veredicto.",
-      "Si falla la cobertura, reportar filas ejemplo y causa de origen; no hacer corrección de código en bifurcador."
-    ],
-    "respuesta_esperada": "Reporte M2 con cobertura 100% o diagnóstico de origen documentado en ultimo_resultado."
+    "detalle": [],
+    "respuesta_esperada": ""
   },
   "gobierno_m1_m2": {
     "reglas": [
@@ -102,30 +96,28 @@
     }
   },
   "ultimo_resultado": {
-    "ejecutado_por": "M1 (Sauron)",
-    "fecha": "2026-05-15",
-    "tarea": "recarga masiva fact_costos_b52 — CSV con GERENCIA 100% (post-fix bifurcador)",
-    "resultado": "EXITO. DROP + INSERT + sincronizacion dim. 473,098 filas. GERENCIA poblada: 473,098/473,098 (100%). Dashboard prod: months=72 gerencias=19 obras=448. Todo cuadra.",
-    "errores": "Ninguno.",
-    "commit": "pendiente — chore(jornada): recarga masiva b53 2026-05-15"
+    "ejecutado_por": "M2 (Isindur)",
+    "fecha": "2026-05-16",
+    "tarea": "ejecucion bifurcador + validacion cobertura set b52 post-actualizacion Direccion",
+    "resultado": "EXITO. Bifurcador ejecutado en POSE_ETL: completo=output/b52/costos_b52_20260516_190833.csv, delta=output/b52/costos_b52_20260516_190833_delta.csv, filas leidas=473,097, NUEVO=1, MODIFICADO=293,845, SIN_CAMBIO=179,251. Set validador scripts/validar_cobertura_csv.py: OBRA_PRONTO=100%, GERENCIA=100%, COMPENSABLE=100% (vacios=0). _hashes_anterior.csv actualizado en la corrida.",
+    "errores": "FASE 2 no ejecutada en M2: falta modulo psycopg2/acceso a BD objetivo para validar incremental. Se entrega delta para ejecucion en M1.",
+    "commit": "pendiente — chore(m2): cierre 2026-05-16"
   },
   "jornada": {
     "fin": {
       "fecha": "2026-05-16",
       "tareas_completadas": [
-        "Generados y validados scripts de carga incremental: scripts/cargar_incremental_b52.py y scripts/validar_incremental_b52.py (PEP8 OK, QA OK).",
-        "Documentado protocolo operativo M1 = Sauron, pasos de validación y carga incremental, y alerta activa por error 524 en la web.",
-        "Actualizado config/estado_proyecto.json con instrucciones, pasos y trazabilidad completa para próxima sesión.",
-        "Pipeline QA: black, flake8, mypy sin advertencias en scripts nuevos."
+        "M2 ejecuto bifurcador B52 en POSE_ETL y genero salida actualizada (completo + delta).",
+        "M2 ejecuto set validador scripts/validar_cobertura_csv.py con cobertura 100% en OBRA_PRONTO, GERENCIA y COMPENSABLE.",
+        "Confirmado que output/b52/_hashes_anterior.csv se actualizo en la corrida 2026-05-16 19:08.",
+        "Actualizado config/estado_proyecto.json con evidencia operativa, cierre de m2_pendiente y referencia de continuidad para M1."
       ],
       "tareas_pendientes_manana": [
-        "Ejecutar scripts/validar_incremental_b52.py sobre el CSV delta generado por el bifurcador (NUEVO/MODIFICADO).",
-        "Si la validación es 100% OK, ejecutar scripts/cargar_incremental_b52.py para cargar el delta en fact_costos_b52 (usar --dry-run primero para simular).",
-        "Verificar en la BD que la cantidad de filas y los datos coincidan con el CSV y no haya duplicados ni pérdida de información.",
-        "Si la web sigue dando error 524, revisar si los cambios async/streaming están aplicados en Pose_API y Frontend, y redeployar si es necesario.",
-        "Documentar todo resultado, evidencia y problemas en este archivo y en la bitácora correspondiente antes de cerrar la jornada."
+        "M1: ejecutar scripts/validar_incremental_b52.py contra output/b52/costos_b52_20260516_190833_delta.csv con acceso a BD objetivo.",
+        "M1: si validacion incremental OK, ejecutar scripts/cargar_incremental_b52.py (dry-run y luego carga real) con verificacion de consistencia.",
+        "M1: mantener seguimiento de error 524 en web, validando despliegue async/streaming en Pose_API y Frontend si reaparece."
       ],
-      "notas_qa": "Cierre de jornada M1 (Sauron): scripts incrementales listos, documentación y pasos QA asegurados. Alerta 524 documentada y con protocolo de verificación. Todo listo para continuar sin pérdida de contexto.",
+      "notas_qa": "Cierre de jornada M2 (Isindur): corrida bifurcador y cobertura CSV completadas sin cambios de codigo. Se deja delta listo para validacion/carga incremental en M1.",
       "estado_pipeline": "VERDE"
     }
   }
