@@ -26,7 +26,7 @@
   },
   "desarrollo_local": {
     "rama_activa": "main",
-    "punto_de_partida_manana": "Recarga masiva COMPLETADA (473,098 filas). API fix pusheado — GH Actions buildea imagen y deploya. Verificar dashboard en prod (https://api.gestionpose.com.ar/api/v1/b53/dashboard-data) — months/gerencias_list deben estar poblados post-deploy. Pendiente: investigar GERENCIA vacia en fact (BaseCostosPOSE.xlsx M2).",
+    "punto_de_partida_manana": "Botón Descargar Base deployado (Pose_API f5d13c5 + Frontend ba06a0f). Próxima tarea: apertura por gerencia en API/Frontend (dim_gerencias + endpoint + UI).",
     "fecha_actualizacion": "2026-05-15"
   },
   "m2_pendiente": {
@@ -52,10 +52,10 @@
       "fecha": "2026-05-15"
     },
     "gerencia_en_fact": {
-      "estado": "PENDIENTE",
-      "descripcion": "GERENCIA es NULL en todos los registros de fact_costos_b52. BaseCostosPOSE.xlsx en M2 genera la columna vacia. La API usa COALESCE(dim.gerencia, fact.GERENCIA) — funciona via dim_obras_gerencias como fallback.",
-      "impacto": "MEDIO — dashboard funciona via JOIN a dim, pero GERENCIA en fact queda sin datos.",
-      "accion": "Investigar por que BaseCostosPOSE.xlsx genera GERENCIA vacia en M2. Candidato: la query PQ no hace el lookup a Loockups.xlsx para esta columna.",
+      "estado": "RESUELTO",
+      "descripcion": "GERENCIA 100% poblada en fact_costos_b52. Isindur corrigio el bifurcador (commit 88b25d0): GERENCIA incluida en _sha256_importe y verificacion de cobertura 0 vacios. Recarga masiva 2026-05-15 confirma 473,098/473,098 no nulas.",
+      "impacto": "RESUELTO — GERENCIA viene del CSV y se sincroniza con dim en paso [4/5].",
+      "accion": "Cerrado.",
       "fecha": "2026-05-15"
     }
   },
@@ -68,39 +68,33 @@
     }
   },
   "ultimo_resultado": {
-    "ejecutado_por": "M2 (Isindur)",
+    "ejecutado_por": "M1 (Sauron)",
     "fecha": "2026-05-15",
-    "tarea": "fix(bifurcador): GERENCIA en _hash_importe + hash base regenerado",
-    "resultado": "EXITO. hasher.py corregido: GERENCIA agregada a _sha256_importe (junto a COMPENSABLE y CODIGO_CUENTA). Hash base regenerado desde cero: 473,098 filas, primera corrida limpia. Verificacion: OBRA_PRONTO + GERENCIA + COMPENSABLE al 100% (0 vacios). Script validar_cobertura_csv.py creado para post-bifurcador. CSVs en output/b52/ listos para transferencia a M1 via pen.",
+    "tarea": "recarga masiva fact_costos_b52 — CSV con GERENCIA 100% (post-fix bifurcador)",
+    "resultado": "EXITO. DROP + INSERT + sincronizacion dim. 473,098 filas. GERENCIA poblada: 473,098/473,098 (100%). Dashboard prod: months=72 gerencias=19 obras=448. Todo cuadra.",
     "errores": "Ninguno.",
-    "commit": "POSE_ETL: 88b25d0 (pusheado)."
+    "commit": "pendiente — chore(jornada): recarga masiva b53 2026-05-15"
   },
   "jornada": {
     "fin": {
-      "fecha": "2026-05-14",
+      "fecha": "2026-05-15",
       "tareas_completadas": [
-        "Bifurcador B52: rutas absolutas corregidas en bifurcador.py y lector.py (Path(__file__).resolve().parents[3])",
-        "Bifurcador B52: ejecutado — 473,098 filas, delta 302,036 (NUEVO 17,674 / MODIFICADO 284,362 / SIN_CAMBIO 171,062)",
-        "GestionComp: scraper debitos_creditos_bancarios implementado y probado (commit 401e53a)",
-        "morning_pipeline.py: rutas corregidas con Path() + C:\\Dev\\.gemini (commit 4e1e8eb)",
-        "CSV bifurcador recibidos de M2 via pen → output/b52/ en M1",
-        "fix(etl_a2): Fase 3 Paso2_ActualizarPQ.py — falso positivo silencioso resuelto. Commit e77c8d1.",
-        "Servidor Hetzner: verificado sincronizado.",
-        "[M2] ETL A2 2026 completo: 538,250 registros, 44 archivos. Commits 2bab0c5 / 81c1bf3 / 774ee0c.",
-        "[M1 sesión tarde] fix(bifurcador): COMPENSABLE en lector + hasher + escritor_csv. Commit 6d75ea4. black/flake8/mypy OK.",
-        "[M1 sesión tarde] Prueba regresión COMPENSABLE APROBADA por Isindur (commit 2d6046b). CSV base limpia: costos_b52_20260514_180716.csv.",
-        "[M1 sesión tarde] Análisis archivos pen (RegPOSE_BD_PLANCUENTAS.xlsx): BaseCostosPOSE.xlsx tiene GERENCIA + TC + IMPORTE_USD — lector.py los descartaba por omisión.",
-        "feat(bifurcador): GERENCIA, TC, IMPORTE_USD agregadas a COLS_NEGOCIO (lector.py) y COLS_SALIDA (escritor_csv.py). Commit caa61fa. black/flake8/mypy OK.",
-        "m2_pendiente actualizado: Isindur debe correr Paso2 + resetear hashes + bifurcador para generar CSV con schema expandido."
+        "git pull POSE_ETL — Isindur entregó fix bifurcador (GERENCIA en hash, hashes regenerados). CSV costos_b52_20260515_013954.csv con GERENCIA 100%.",
+        "_poblar_gerencia() corregida: retorna COUNT(*) WHERE GERENCIA IS NOT NULL (no rowcount del UPDATE). Commit e9c041e.",
+        "procedimiento_drop.md adaptado a GERENCIA 100% (no más NULL esperado). Commit d3e87ad.",
+        "DROP + INSERT fact_costos_b52 ejecutado en Hetzner PROD: 473,098 filas, GERENCIA 473,098/473,098.",
+        "Dashboard prod verificado: months=72, gerencias=19, obras=448. Todo cuadra.",
+        "Reconciliación CSV vs DB: diferencia $7.73 sobre $52B = float64 vs NUMERIC(18,2), no pérdida de datos.",
+        "feat(api): endpoint GET /api/v1/b53/exportar-excel — descarga fact_costos_b52 completa como Excel. Commit Pose_API f5d13c5.",
+        "feat(frontend): botón 📥 Descargar Base en dashboard header + CSS light/dark + función descargarBase(). Commit Pose_Frontend ba06a0f.",
+        "pyproject.toml creado en Pose_API (line-length=79). black/flake8/mypy todos en verde."
       ],
       "tareas_pendientes_manana": [
-        "[BLOQUEANTE — esperar Isindur] Paso2 en M2 → BaseCostosPOSE.xlsx regenerado con Loockups correcto.",
-        "[BLOQUEANTE — esperar Isindur] Bifurcador en M2 → nuevo CSV con GERENCIA + TC + IMPORTE_USD + confirmar 3 columnas presentes.",
-        "[M1 — post Isindur] DROP fact_costos_b52 en Hetzner + carga masiva desde nuevo CSV (script src/loader/recarga_masiva_b53_prod.py a crear).",
-        "[M1 — post DROP] Actualizar endpoint Pose_API: usar GERENCIA de fact (eliminar JOIN obligatorio a dim). Mantener como fallback.",
-        "[M1 — post DROP] Verificar dashboard Pose_Frontend con datos nuevos en prod."
+        "Diseño apertura por gerencia: dim_gerencias en schema PostgreSQL + endpoint API con filtro gerencia + UI Frontend (selector/tabla gerencias).",
+        "Verificar que el Docker de Pose_API haya rebuildeado con openpyxl (GH Actions post push f5d13c5).",
+        "Probar botón Descargar Base en prod (https://api.gestionpose.com.ar/api/v1/b53/exportar-excel)."
       ],
-      "notas_qa": "Schema bifurcador expandido (commit caa61fa). Pendiente: CSV nuevo de M2 con GERENCIA/TC/IMPORTE_USD antes del DROP. NO hacer DROP con CSV viejo (costos_b52_20260514_180716.csv) — le faltan las 3 columnas nuevas.",
+      "notas_qa": "Pipeline 100% VERDE. Pose_API pyproject.toml creado (line-length=79 unifica el ecosistema). Repo Pose_Frontend: rama activa main, default master — verificar divergencia de ramas si es necesario.",
       "estado_pipeline": "VERDE"
     }
   }
