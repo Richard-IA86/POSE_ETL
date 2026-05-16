@@ -19,8 +19,10 @@
     "contexto": [
       "Fix bifurcador commit 6d75ea4: COMPENSABLE ahora incluida en hash (lector + hasher + escritor_csv). Los hashes anteriores son INVÁLIDOS.",
       "El CSV output/b52/costos_b52_20260514_023142.csv fue generado CON EL BUG. No usar para recarga Hetzner.",
-      "Isindur debe generar un NUEVO CSV post-fix. Sin eso, la recarga b53_prod queda bloqueada.",
-      "Nuevo requerimiento confirmado: la carga b53_prod debe soportar apertura por gerencia. Implica diseño en API (Pose_API) y Frontend (Pose_Frontend) además de la carga en PostgreSQL."
+      "Isindur debe generar un NUEVO CSV post-fix. Sin eso, la recarga b52_prod queda bloqueada.",
+      "Nuevo requerimiento confirmado: la carga b52_prod debe soportar apertura por gerencia. Implica diseño en API (Pose_API) y Frontend (Pose_Frontend) además de la carga en PostgreSQL.",
+      "Bifurcador: no tocar código. El error anterior fue de origen de datos, no de implementación.",
+      "Hash: GERENCIA ya está incorporada y lista para comparar la nueva corrida."
     ],
     "prerequisito_recarga": "Esperar confirmación de Isindur: prueba regresión COMPENSABLE aprobada (fila enero 2021_2022_Historico aparece como MODIFICADO). Solo entonces recargar."
   },
@@ -30,10 +32,24 @@
     "fecha_actualizacion": "2026-05-15"
   },
   "m2_pendiente": {
-    "tarea": "",
-    "fecha": "2026-05-15",
-    "detalle": [],
-    "respuesta_esperada": ""
+    "tarea": "validar set b52 post-bifurcador (sin cambios de código)",
+    "fecha": "2026-05-16",
+    "detalle": [
+      "NO tocar bifurcador.py ni scripts de hashing: quedaron correctos.",
+      "Ejecutar: python scripts/validar_cobertura_csv.py",
+      "Validar cobertura 100% en columnas clave del director: OBRA_PRONTO, GERENCIA, COMPENSABLE.",
+      "Adjuntar evidencia en ultimo_resultado: archivo procesado, total filas, vacíos por columna, veredicto.",
+      "Si falla la cobertura, reportar filas ejemplo y causa de origen; no hacer corrección de código en bifurcador."
+    ],
+    "respuesta_esperada": "Reporte M2 con cobertura 100% o diagnóstico de origen documentado en ultimo_resultado."
+  },
+  "gobierno_m1_m2": {
+    "reglas": [
+      "M1 define, diseña, valida QA y deja instrucciones claras.",
+      "M2 ejecuta tareas operativas delegadas y se ocupa de hacer que funcione la creación de M1; devuelve evidencia en el canal de estado.",
+      "M1 revisa cambios realizados y modifica o crea un set de validación.",
+      "Todo cambio crítico debe quedar trazado en estado_proyecto y en el cierre de jornada."
+    ]
   },
   "decisiones": {
     "hetzner_delta_csv": {
@@ -92,7 +108,7 @@
       "tareas_pendientes_manana": [
         "Diseño apertura por gerencia: dim_gerencias en schema PostgreSQL + endpoint API con filtro gerencia + UI Frontend (selector/tabla gerencias).",
         "Verificar que el Docker de Pose_API haya rebuildeado con openpyxl (GH Actions post push f5d13c5).",
-        "Probar botón Descargar Base en prod (https://api.gestionpose.com.ar/api/v1/b53/exportar-excel)."
+        "Probar botón Descargar Base en prod (https://api.gestionpose.com.ar/api/v1/b52/exportar-excel)."
       ],
       "notas_qa": "Pipeline 100% VERDE. Pose_API pyproject.toml creado (line-length=79 unifica el ecosistema). Repo Pose_Frontend: rama activa main, default master — verificar divergencia de ramas si es necesario.",
       "estado_pipeline": "VERDE"
