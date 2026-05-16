@@ -69,6 +69,20 @@
       "razon": "No existe logica de upload automatico en el bifurcador. El archivo output/b52/*_delta.csv se genera localmente y M2 lo transfiere segun necesidad.",
       "fecha": "2026-05-12",
       "pendiente": "Evaluar en el futuro si conviene automatizar via scp/sftp desde bifurcador.py"
+    },
+    "archivos_grandes_en_git": {
+      "estado": "EN_EVALUACION",
+      "propuesta": "Sacar output/b52/*.csv y output/b52/_hashes_anterior.csv del versionado Git (.gitignore) y transferirlos a Hetzner staging via SCP por M2",
+      "razon": "Los archivos CSVs pesan ~193 MB cada uno y _hashes_anterior.csv ~59 MB. GitHub avisa sobre límite recomendado de 50 MB. Estos son artifacts operacionales, no código fuente.",
+      "plan_operativo": [
+        "1. Agregar 'output/b52/*.csv' y 'output/b52/_hashes_anterior.csv' a .gitignore",
+        "2. M2 copia los 3 archivos (completo, delta, _hashes_anterior) a Hetzner staging via SCP tras cada bifurcador",
+        "3. M1 baja los 3 archivos de staging para ejecutar validacion_incremental_b52.py y carga_incremental_b52.py",
+        "4. Repo limpio sin archivos grandes en Git, transferencia eficiente via WireGuard+DBeaver+SCP (M2 ya tiene acceso)"
+      ],
+      "impacto": "POSITIVO — repo más limpio, sin warnings de GitHub, transferencia directa y segura via VPN",
+      "fecha_propuesta": "2026-05-16",
+      "esperando_evaluacion_m1": true
     }
   },
   "alertas_pendientes": {
